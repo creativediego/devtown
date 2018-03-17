@@ -30,7 +30,7 @@ html {
   }
 
   #devtown-title{
-      font-size: 539%;
+      font-size: 10vw;
       color: white;
   }
 
@@ -41,4 +41,10 @@ html {
   ::placeholder { 
     color: white;
     opacity: 1; 
+}
+
+#city-submit {
+    background-color: transparent;
+    border-width: 2px;
+    color: #009688;
 }
