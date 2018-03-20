@@ -6,7 +6,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         var corsProxy = "https://cors-anywhere.herokuapp.com/";
-        var slug = $("#city-input").val().trim().replace(" ", "-");
+        var slug = $("#city-input").val().trim().replace(" ", "-").toLowerCase();
         var url = `${corsProxy}https://api.teleport.org/api/urban_areas/slug:${slug}/salaries/`;
 
 
@@ -33,9 +33,8 @@ $(document).ready(function() {
 
 
 
-
     var searchOptions = {
-        url: "cities.json",
+        url: "js/cities.json",
         getValue: "name",
         list: {
             match: {
