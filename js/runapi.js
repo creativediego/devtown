@@ -21,11 +21,6 @@ var RunApi = Class.create({ //abstract parent class
             onFailure : function() { console.log("something went wrong");}
         });
         //make an ajax call with this.url and this.searchTerm
-    },
-    concatURL : function() {
-        //concat this.url to this.searchTerm
-        //funciton needs to be overwritten
-        console.log("concatURL function");
     }
 });
 
@@ -62,7 +57,6 @@ var SalariesAPI = Class.create(RunApi,{
         console.log("Running ProcessData in Salaries API");
         
         var salaries = data.responseJSON.salaries;
-        console.log(salaries);
         var obj = {};
         //get "web developer" salary
         salaries.each(function(element){
@@ -90,7 +84,23 @@ var JobsAPI = Class.create(RunApi,{
     },
     processData : function(data){
         console.log("Running ProcessData in JobsAPI")
-        console.log(data.responseJSON);
+        var jobs = data.responseJSON;
+
+        var results = [];
+        jobs.each(function(job){
+            var j = {};
+            j.title = job.title;
+            j.location = job.location;
+            j.url = job.url;
+            j.type = job.type;
+            j.company = job.company;
+            j.company_url = job.company_url;
+
+            results.push(j);
+
+        });
+        console.log(results);
+        return results;
 
         //need to discuss with the team on what data to return from JobsAPI's processData function
     }
