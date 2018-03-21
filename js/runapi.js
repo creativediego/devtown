@@ -1,3 +1,12 @@
+/* 
+    To use this class hierarchy properly, please include these scripts in your html file
+
+    <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
+    <script src="js/prototype-cors.js"></script>
+    <script src="js/runapi.js"></script>
+    <script src="js/app.js"></script>
+*/
+
 var RunApi = Class.create({ //abstract parent class
     corsProxy : "https://cors-anywhere.herokuapp.com/",
     url : "",
