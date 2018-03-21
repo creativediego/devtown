@@ -1,10 +1,8 @@
 var RunApi = Class.create({
     corsProxy : "https://cors-anywhere.herokuapp.com/",
-    initialize : function(url,searchTerm) {
-        this.url = url;
-        this.searchTerm = searchTerm;
-
-        this.run();
+    url : "",
+    initialize : function(searchTerm) {
+        this.searchTerm = searchTerm.replace(/\s+/g, '-').toLowerCase();
     },
     
     processData : function(data){
@@ -31,13 +29,20 @@ var RunApi = Class.create({
 });
 
 var CityScoresAPI = Class.create(RunApi,{
+    initialize : function($super,searchTerm){
+        $super(searchTerm);
+        
+        this.url = "https://api.teleport.org/api/urban_areas/slug:"+this.searchTerm+"/scores/";
+
+        this.run();
+    },
     processData : function($super, data){
         console.log("Running ProcessData in CityScores API");
         
         var scores = data.responseJSON.categories;
         var obj = {};
         scores.each(function(element){
-            obj[element.name] = element.score_out_of_10;
+            obj[element.name] = Math.round(element.score_out_of_10);
         });
 
         console.log(obj);
@@ -46,6 +51,11 @@ var CityScoresAPI = Class.create(RunApi,{
 });
 
 var SalariesAPI = Class.create(RunApi,{
+    initialize : function($super,searchTerm){
+        $super(searchTerm);
+        this.url = "https://api.teleport.org/api/urban_areas/slug:"+this.searchTerm+"/salaries/";
+        this.run();
+    },
     processData : function($super, data){
         //$super(data);
         console.log("Running ProcessData in Salaries API");
@@ -64,6 +74,24 @@ var SalariesAPI = Class.create(RunApi,{
 
         console.log(obj);
         return obj;
+    }
+});
+
+var JobsAPI = Class.create(RunApi,{
+    initialize : function($super,searchTerm){
+        $super(searchTerm);
+        this.url = "https://jobs.github.com/positions.json?";
+        this.description = "description=web+development" + "&";
+        this.searchTerm = "location="+this.searchTerm+"&";
+        this.url += this.description + this.searchTerm;
+
+        this.run();
+    },
+    processData : function(data){
+        console.log("Running ProcessData in JobsAPI")
+        console.log(data.responseJSON);
+
+        //need to discuss with the team on what data to return from JobsAPI's processData function
     }
 });
 
