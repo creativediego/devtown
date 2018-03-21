@@ -3,13 +3,12 @@
     background-image: url("../images/first-background.jpg")
 };*/
 
-html { 
+#search-body { 
     background: url("../images/New-York-City.jpg") no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
     z-index: -1;
+    height: 100vh;
+    width: 100vw;
   }
 
   #search-bar {
@@ -18,6 +17,17 @@ html {
     right: 0;
     margin: auto;
     top: 38%;
+  }
+  #input-city::placeholder {
+    color: white;
+  }
+
+  #input-city{
+      color: white;
+  }
+
+  #city-help{
+      color: white;
   }
 
   #title{
