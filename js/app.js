@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+
+
     $("#search-city").on("click", function(e) {
         console.log("clicked")
 
@@ -26,12 +28,14 @@ $(document).ready(function() {
                 return element.job.id === "WEB-DEVELOPER"
             });
             console.log(webDeveloperObject)
-            $("body").append(`<p>25th percentile: ${Math.round(webDeveloperObject.salary_percentiles.percentile_25)}</p>`)
+            $("#salary-info").html(`<p>25th percentile: ${numberWithCommas(webDeveloperObject.salary_percentiles.percentile_25)}</p>`)
 
         });
     })
 
-
+    const numberWithCommas = (x) => {
+        return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
     var searchOptions = {
         url: "js/cities.json",
