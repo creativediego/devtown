@@ -1,4 +1,4 @@
-var RunApi = Class.create({
+var RunApi = Class.create({ //abstract parent class
     corsProxy : "https://cors-anywhere.herokuapp.com/",
     url : "",
     initialize : function(searchTerm) {
@@ -9,6 +9,7 @@ var RunApi = Class.create({
         console.log("ProcessData function");
         //this function will need to be overwritten by child classes
         //because we would be handling data from different API's differently
+        //essentially, this function is a pure virtual function 
     },
     run : function(){
         console.log("run function");
@@ -94,7 +95,3 @@ var JobsAPI = Class.create(RunApi,{
         //need to discuss with the team on what data to return from JobsAPI's processData function
     }
 });
-
-
-
-//sample API call for teleport API https://api.teleport.org/api/urban_areas/slug:pittsburgh/scores/
