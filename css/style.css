@@ -1,7 +1,5 @@
 /* Search Page Background Image
-#first-background{
-    background-image: url("../images/first-background.jpg")
-};*/
+*/
 
 #search-body { 
     background: url("../images/New-York-City.jpg") no-repeat center center fixed; 
@@ -47,11 +45,6 @@
   #devtown-sub{
       color: white;
   }
-
-  ::placeholder { 
-    color: white;
-    opacity: 1; 
-}
 
 #city-submit {
     background-color: transparent;
