@@ -49,7 +49,7 @@ var GetCoordinates = Class.create(RunApi, {
             latitude: data.bounding_box_latlong.south
 
         };
-        console.log(obj);
+        console.log(data.bounding_box_latlong.west);
         return obj;
     }
 });
