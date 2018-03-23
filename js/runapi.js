@@ -50,6 +50,9 @@ var GetCoordinates = Class.create(RunApi, {
         obj["longitude"] =data.responseJSON.bounding_box.latlon.west;
         obj["latitude"] = data.responseJSON.bounding_box.latlon.south;
         
+        var events = new EventsAPI(32.312,-117.376);
+        events.run();
+
         console.log(obj);
         return obj;
     },
@@ -60,25 +63,25 @@ var GetCoordinates = Class.create(RunApi, {
 
 var EventsAPI = Class.create(RunApi, {
 
-    initialize: function($super) {
+    initialize: function($super,lat,long) {
 
-        this.url = `https://api.meetup.com/find/upcoming_events?photo-host=public&page=20&text=javascript&sig_id=250431359&order=time&lon=-${coordinates.longitude}&lat=${coordinates.latitude}&sig=e5feea709554a29a9ad1908e25d4e43a7c142add`;
+        this.url = "https://api.meetup.com/find/upcoming_events?photo-host=public&page=20&text=javascript&sig_id=250431359&order=time&lon="+long+"&lat="+lat+"&sig=e5feea709554a29a9ad1908e25d4e43a7c142add";
     },
     processData: function($super, data) {
-        var events = data.events;
+        var events = data.responseJSON.events;
         console.log("events API processData function");
-        console.log(events);
+        console.log(data);
         var obj = {};
         events.each(function(element) {
-            obj[name] = element.name;
-            obj[date] = element.local_date;
-            obj[time] = element.local_time;
-            obj[venue] = {
-                    name: element.venue.name,
-                    group: element.group.name,
+            obj["name"] = element.name;
+            obj["date"] = element.local_date;
+            obj["time"] = element.local_time;
+            obj["venue"] = {
+                    "name": element.venue.name,
+                    "group": element.group.name,
                 },
-                obj[description] = element.description;
-            object[link] = element.link
+                obj["description"] = element.description;
+            object["link"] = element.link
         });
         console.log(obj);
         return obj;
