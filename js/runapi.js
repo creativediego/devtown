@@ -21,15 +21,17 @@ var RunApi = Class.create({ //abstract parent class
         //essentially, this function is a pure virtual function 
     },
     run: function() {
-        console.log("run function");
         this.url = this.corsProxy + this.url;
         console.log(this.url);
         new Ajax.Request(this.url, {
             method: 'get',
             onSuccess: this.processData,
-            onFailure: function() { console.log("something went wrong"); }
+            onFailure: this.runFailed
         });
         //make an ajax call with this.url and this.searchTerm
+    },
+    runFailed : function(){
+        console.log("something went wrong");
     },
     makeChart: function() {
         //virtual function, implement it in child classes
@@ -40,28 +42,32 @@ var RunApi = Class.create({ //abstract parent class
 var GetCoordinates = Class.create(RunApi, {
     initialize: function($super, searchTerm) {
         $super(searchTerm);
-        this.url = `https://api.teleport.org/api/urban_areas/slug:${this.searchTerm}/`
+        this.url = "https://api.teleport.org/api/urban_areas/slug:"+this.searchTerm+"/";
     },
     processData: function($super, data) {
-        console.log("Running coordinates API")
-        var obj = {
-            longitude: data.bounding_box_latlong.west,
-            latitude: data.bounding_box_latlong.south
-
-        };
-        console.log(data.bounding_box_latlong.west);
+        console.log("Running coordinates processData");
+        var obj = {};
+        obj["longitude"] =data.responseJSON.bounding_box.latlon.west;
+        obj["latitude"] = data.responseJSON.bounding_box.latlon.south;
+        
+        console.log(obj);
         return obj;
-    }
+    },
+    runFailed : function(){
+        console.log("something went wrong with GetCoordinates");
+    },
 });
 
 var EventsAPI = Class.create(RunApi, {
 
     initialize: function($super) {
 
-        this.url = `https: //api.meetup.com/find/upcoming_events?photo-host=public&page=20&text=javascript&sig_id=250431359&order=time&lon=-${coordinates.longitude}&lat=${coordinates.latitude}&sig=e5feea709554a29a9ad1908e25d4e43a7c142add`;
+        this.url = `https://api.meetup.com/find/upcoming_events?photo-host=public&page=20&text=javascript&sig_id=250431359&order=time&lon=-${coordinates.longitude}&lat=${coordinates.latitude}&sig=e5feea709554a29a9ad1908e25d4e43a7c142add`;
     },
     processData: function($super, data) {
         var events = data.events;
+        console.log("events API processData function");
+        console.log(events);
         var obj = {};
         events.each(function(element) {
             obj[name] = element.name;
@@ -76,7 +82,10 @@ var EventsAPI = Class.create(RunApi, {
         });
         console.log(obj);
         return obj;
-    }
+    },
+    runFailed : function(){
+        console.log("something went wrong with EventAPI");
+    },
 
 
 });
@@ -104,7 +113,10 @@ var CityScoresAPI = Class.create(RunApi, {
     },
     makeChart: function(labels, chartData) {
         //make chart object and update the chart div on html
-    }
+    },
+    runFailed : function(){
+        console.log("something went wrong with CityScoresAPI");
+    },
 });
 
 var SalariesAPI = Class.create(RunApi, {
@@ -128,6 +140,9 @@ var SalariesAPI = Class.create(RunApi, {
         });
 
         return obj;
+    },
+    runFailed : function(){
+        console.log("something went wrong with SalariesAPI");
     }
 });
 
@@ -160,5 +175,8 @@ var JobsAPI = Class.create(RunApi, {
         return results;
 
         //need to discuss with the team on what data to return from JobsAPI's processData function
+    },
+    runFailed : function(){
+        console.log("something went wrong with JobsAPI");
     }
 });
