@@ -176,7 +176,7 @@ var EasyAutocomplete = (function(scope){
 				if (!options.getValue) {
 
 					options.getValue = function(element) {
-						return $j(element).text();
+						return j$(element).text();
 					};
 				}
 
@@ -289,7 +289,7 @@ var EasyAutocomplete = (function(scope){
 
 				if (defaults.dataType.toUpperCase() === "XML") {
 					defaults.listLocation = function(data) {
-						return $j(data).find(defaultlistLocation);
+						return j$(data).find(defaultlistLocation);
 					};
 				} else {
 					defaults.listLocation = function(data) {
@@ -338,7 +338,7 @@ var EasyAutocomplete = (function(scope){
 						consol.log("Property '" + property + "' does not exist in EasyAutocomplete options API.");		
 					}
 
-					if (typeof source[property] === "object" && $j.inArray(property, externalObjects) === -1) {
+					if (typeof source[property] === "object" && j$.inArray(property, externalObjects) === -1) {
 						checkPropertiesIfExist(source[property], target[property]);
 					}
 				}	
@@ -537,7 +537,7 @@ var EasyAutocomplete = (function(scope) {
 
 				if (listLocation !== undefined) {
 					if (typeof listLocation === "string") {
-						builder.data = $j(data).find(listLocation);
+						builder.data = j$(data).find(listLocation);
 					} else if (typeof listLocation === "function") {
 
 						builder.data = listLocation(data);
@@ -578,7 +578,7 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 
-			$j(builder.data).find(builder.xmlElementName).each(function() {
+			j$(builder.data).find(builder.xmlElementName).each(function() {
 				simpleList.push(this);
 			});
 
@@ -883,7 +883,7 @@ var EasyAutocomplete = (function(scope){
 var EasyAutocomplete = (function(scope) {
 
 	
-	scope.main = function Core($jinput, options) {
+	scope.main = function Core(j$input, options) {
 				
 		var module = {
 				name: "EasyAutocomplete",
@@ -897,8 +897,8 @@ var EasyAutocomplete = (function(scope) {
 			listBuilderService = new scope.ListBuilderService(config, scope.proccess),
 			checkParam = config.equals,
 
-			$jfield = $jinput, 
-			$jcontainer = "",
+			j$field = j$input, 
+			j$container = "",
 			elementsList = [],
 			selectedElement = -1,
 			requestDelayTimeoutId;
@@ -914,7 +914,7 @@ var EasyAutocomplete = (function(scope) {
 		};
 
 		this.getContainer = function() {
-			return $jcontainer;
+			return j$container;
 		};
 
 		this.getSelectedItemIndex = function() {
@@ -947,7 +947,7 @@ var EasyAutocomplete = (function(scope) {
 		};
 		function init() {
 
-			if ($jfield.length === 0) {
+			if (j$field.length === 0) {
 				logger.error("Input field doesn't exist.");
 				return;
 			}
@@ -970,7 +970,7 @@ var EasyAutocomplete = (function(scope) {
 		function prepareField() {
 
 				
-			if ($jfield.parent().hasClass(consts.getValue("WRAPPER_CSS_CLASS"))) {
+			if (j$field.parent().hasClass(consts.getValue("WRAPPER_CSS_CLASS"))) {
 				removeContainer();
 				removeWrapper();
 			} 
@@ -978,14 +978,14 @@ var EasyAutocomplete = (function(scope) {
 			createWrapper();
 			createContainer();	
 
-			$jcontainer = $j("#" + getContainerId());
+			j$container = j$("#" + getContainerId());
 			if (config.get("placeholder")) {
-				$jfield.attr("placeholder", config.get("placeholder"));
+				j$field.attr("placeholder", config.get("placeholder"));
 			}
 
 
 			function createWrapper() {
-				var $jwrapper = $j("<div>"),
+				var j$wrapper = j$("<div>"),
 					classes = consts.getValue("WRAPPER_CSS_CLASS");
 
 			
@@ -1002,9 +1002,9 @@ var EasyAutocomplete = (function(scope) {
 				}
 				
 
-				$jwrapper
+				j$wrapper
 					.addClass(classes);
-				$jfield.wrap($jwrapper);
+				j$field.wrap(j$wrapper);
 
 
 				if (config.get("adjustWidth") === true) {
@@ -1015,26 +1015,26 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function adjustWrapperWidth() {
-				var fieldWidth = $jfield.outerWidth();
+				var fieldWidth = j$field.outerWidth();
 
-				$jfield.parent().css("width", fieldWidth);				
+				j$field.parent().css("width", fieldWidth);				
 			}
 
 			function removeWrapper() {
-				$jfield.unwrap();
+				j$field.unwrap();
 			}
 
 			function createContainer() {
-				var $jelements_container = $j("<div>").addClass(consts.getValue("CONTAINER_CLASS"));
+				var j$elements_container = j$("<div>").addClass(consts.getValue("CONTAINER_CLASS"));
 
-				$jelements_container
+				j$elements_container
 						.attr("id", getContainerId())
-						.prepend($j("<ul>"));
+						.prepend(j$("<ul>"));
 
 
 				(function() {
 
-					$jelements_container
+					j$elements_container
 						/* List show animation */
 						.on("show.eac", function() {
 
@@ -1044,18 +1044,18 @@ var EasyAutocomplete = (function(scope) {
 									var animationTime = config.get("list").showAnimation.time,
 										callback = config.get("list").showAnimation.callback;
 
-									$jelements_container.find("ul").slideDown(animationTime, callback);
+									j$elements_container.find("ul").slideDown(animationTime, callback);
 								break;
 
 								case "fade":
 									var animationTime = config.get("list").showAnimation.time,
 										callback = config.get("list").showAnimation.callback;
 
-									$jelements_container.find("ul").fadeIn(animationTime), callback;
+									j$elements_container.find("ul").fadeIn(animationTime), callback;
 								break;
 
 								default:
-									$jelements_container.find("ul").show();
+									j$elements_container.find("ul").show();
 								break;
 							}
 
@@ -1071,18 +1071,18 @@ var EasyAutocomplete = (function(scope) {
 									var animationTime = config.get("list").hideAnimation.time,
 										callback = config.get("list").hideAnimation.callback;
 
-									$jelements_container.find("ul").slideUp(animationTime, callback);
+									j$elements_container.find("ul").slideUp(animationTime, callback);
 								break;
 
 								case "fade":
 									var animationTime = config.get("list").hideAnimation.time,
 										callback = config.get("list").hideAnimation.callback;
 
-									$jelements_container.find("ul").fadeOut(animationTime, callback);
+									j$elements_container.find("ul").fadeOut(animationTime, callback);
 								break;
 
 								default:
-									$jelements_container.find("ul").hide();
+									j$elements_container.find("ul").hide();
 								break;
 							}
 
@@ -1090,18 +1090,18 @@ var EasyAutocomplete = (function(scope) {
 
 						})
 						.on("selectElement.eac", function() {
-							$jelements_container.find("ul li").removeClass("selected");
-							$jelements_container.find("ul li").eq(selectedElement).addClass("selected");
+							j$elements_container.find("ul li").removeClass("selected");
+							j$elements_container.find("ul li").eq(selectedElement).addClass("selected");
 
 							config.get("list").onSelectItemEvent();
 						})
 						.on("loadElements.eac", function(event, listBuilders, phrase) {
 			
 
-							var $jitem = "",
-								$jlistContainer = $jelements_container.find("ul");
+							var j$item = "",
+								j$listContainer = j$elements_container.find("ul");
 
-							$jlistContainer
+							j$listContainer
 								.empty()
 								.detach();
 
@@ -1116,11 +1116,11 @@ var EasyAutocomplete = (function(scope) {
 								}
 
 								if (listBuilders[builderIndex].header !== undefined && listBuilders[builderIndex].header.length > 0) {
-									$jlistContainer.append("<div class='eac-category' >" + listBuilders[builderIndex].header + "</div>");
+									j$listContainer.append("<div class='eac-category' >" + listBuilders[builderIndex].header + "</div>");
 								}
 
 								for(var i = 0, listDataLength = listData.length; i < listDataLength && counter < listBuilders[builderIndex].maxListSize; i += 1) {
-									$jitem = $j("<li><div class='eac-item'></div></li>");
+									j$item = j$("<li><div class='eac-item'></div></li>");
 									
 
 									(function() {
@@ -1128,10 +1128,10 @@ var EasyAutocomplete = (function(scope) {
 											itemCounter = counter,
 											elementsValue = listBuilders[builderIndex].getValue(listData[j]);
 
-										$jitem.find(" > div")
+										j$item.find(" > div")
 											.on("click", function() {
 
-												$jfield.val(elementsValue).trigger("change");
+												j$field.val(elementsValue).trigger("change");
 
 												selectedElement = itemCounter;
 												selectElement(itemCounter);
@@ -1152,24 +1152,24 @@ var EasyAutocomplete = (function(scope) {
 											.html(template.build(highlight(elementsValue, phrase), listData[j]));
 									})();
 
-									$jlistContainer.append($jitem);
+									j$listContainer.append(j$item);
 									elementsList.push(listData[i]);
 									counter += 1;
 								}
 							}
 
-							$jelements_container.append($jlistContainer);
+							j$elements_container.append(j$listContainer);
 
 							config.get("list").onLoadEvent();
 						});
 
 				})();
 
-				$jfield.after($jelements_container);
+				j$field.after(j$elements_container);
 			}
 
 			function removeContainer() {
-				$jfield.next("." + consts.getValue("CONTAINER_CLASS")).remove();
+				j$field.next("." + consts.getValue("CONTAINER_CLASS")).remove();
 			}
 
 			function highlight(string, phrase) {
@@ -1183,12 +1183,12 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function escapeRegExp(str) {
-				return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$j\|]/g, "\\$j&");
+				return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\j$\|]/g, "\\j$&");
  			}
 
 			function highlightPhrase(string, phrase) {
 				var escapedPhrase = escapeRegExp(phrase);
-				return (string + "").replace(new RegExp("(" + escapedPhrase + ")", "gi") , "<b>$j1</b>");
+				return (string + "").replace(new RegExp("(" + escapedPhrase + ")", "gi") , "<b>j$1</b>");
 			}
 
 
@@ -1196,7 +1196,7 @@ var EasyAutocomplete = (function(scope) {
 		}
 		function getContainerId() {
 			
-			var elementId = $jfield.attr("id");
+			var elementId = j$field.attr("id");
 
 			elementId = consts.getValue("CONTAINER_ID") + elementId;
 
@@ -1221,9 +1221,9 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function bindFocusOut() {
-				$jfield.focusout(function () {
+				j$field.focusout(function () {
 
-					var fieldValue = $jfield.val(),
+					var fieldValue = j$field.val(),
 						phrase;
 
 					if (!config.get("list").match.caseSensitive) {
@@ -1247,7 +1247,7 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function bindKeyup() {
-				$jfield
+				j$field
 				.off("keyup")
 				.keyup(function(event) {
 
@@ -1267,7 +1267,7 @@ var EasyAutocomplete = (function(scope) {
 
 								selectedElement -= 1;
 
-								$jfield.val(config.get("getValue")(elementsList[selectedElement]));
+								j$field.val(config.get("getValue")(elementsList[selectedElement]));
 
 								selectElement(selectedElement);
 
@@ -1282,7 +1282,7 @@ var EasyAutocomplete = (function(scope) {
 
 								selectedElement += 1;
 
-								$jfield.val(config.get("getValue")(elementsList[selectedElement]));
+								j$field.val(config.get("getValue")(elementsList[selectedElement]));
 
 								selectElement(selectedElement);
 								
@@ -1294,7 +1294,7 @@ var EasyAutocomplete = (function(scope) {
 
 							if (event.keyCode > 40 || event.keyCode === 8) {
 
-								var inputPhrase = $jfield.val();
+								var inputPhrase = j$field.val();
 
 								if (!(config.get("list").hideOnEmptyPhrase === true && event.keyCode === 8 && inputPhrase === "")) {
 
@@ -1339,7 +1339,7 @@ var EasyAutocomplete = (function(scope) {
 
 							loadElements(listBuilders, inputPhrase);
 
-							if ($jfield.parent().find("li").length > 0) {
+							if (j$field.parent().find("li").length > 0) {
 								showContainer();	
 							} else {
 								hideContainer();
@@ -1364,7 +1364,7 @@ var EasyAutocomplete = (function(scope) {
 
 							settings.data = config.get("preparePostData")(settings.data, inputPhrase);
 
-							$j.ajax(settings) 
+							j$.ajax(settings) 
 								.done(function(data) {
 
 									var listBuilders = listBuilderService.init(data);
@@ -1380,7 +1380,7 @@ var EasyAutocomplete = (function(scope) {
 																				
 									}
 
-									if (listBuilderService.checkIfDataExists(listBuilders) && $jfield.parent().find("li").length > 0) {
+									if (listBuilderService.checkIfDataExists(listBuilders) && j$field.parent().find("li").length > 0) {
 										showContainer();	
 									} else {
 										hideContainer();
@@ -1436,7 +1436,7 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function bindKeydown() {
-				$jfield
+				j$field
 					.on("keydown", function(evt) {
 	        		    evt = evt || window.event;
 	        		    var keyCode = evt.keyCode;
@@ -1449,7 +1449,7 @@ var EasyAutocomplete = (function(scope) {
 
 						if (event.keyCode === 13 && selectedElement > -1) {
 
-							$jfield.val(config.get("getValue")(elementsList[selectedElement]));
+							j$field.val(config.get("getValue")(elementsList[selectedElement]));
 
 							config.get("list").onKeyEnterEvent();
 							config.get("list").onChooseEvent();
@@ -1463,14 +1463,14 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function bindKeypress() {
-				$jfield
+				j$field
 				.off("keypress");
 			}
 
 			function bindFocus() {
-				$jfield.focus(function() {
+				j$field.focus(function() {
 
-					if ($jfield.val() !== "" && elementsList.length > 0) {
+					if (j$field.val() !== "" && elementsList.length > 0) {
 						
 						selectedElement = -1;
 						showContainer();	
@@ -1480,7 +1480,7 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function bindBlur() {
-				$jfield.blur(function() {
+				j$field.blur(function() {
 					setTimeout(function() { 
 						
 						selectedElement = -1;
@@ -1490,30 +1490,30 @@ var EasyAutocomplete = (function(scope) {
 			}
 
 			function removeAutocomplete() {
-				$jfield.attr("autocomplete","off");
+				j$field.attr("autocomplete","off");
 			}
 
 		}
 
 		function showContainer() {
-			$jcontainer.trigger("show.eac");
+			j$container.trigger("show.eac");
 		}
 
 		function hideContainer() {
-			$jcontainer.trigger("hide.eac");
+			j$container.trigger("hide.eac");
 		}
 
 		function selectElement(index) {
 			
-			$jcontainer.trigger("selectElement.eac", index);
+			j$container.trigger("selectElement.eac", index);
 		}
 
 		function loadElements(list, phrase) {
-			$jcontainer.trigger("loadElements.eac", [list, phrase]);
+			j$container.trigger("loadElements.eac", [list, phrase]);
 		}
 
 		function loseFieldFocus() {
-			$jfield.trigger("blur");
+			j$field.trigger("blur");
 		}
 
 
@@ -1526,7 +1526,7 @@ var EasyAutocomplete = (function(scope) {
 
 	scope.inputHasId = function(input) {
 
-		if($j(input).attr("id") !== undefined && $j(input).attr("id").length > 0) {
+		if(j$(input).attr("id") !== undefined && j$(input).attr("id").length > 0) {
 			return true;
 		} else {
 			return false;
@@ -1540,11 +1540,11 @@ var EasyAutocomplete = (function(scope) {
 
 		do {
 			fieldId = "eac-" + Math.floor(Math.random() * 10000);		
-		} while ($j("#" + fieldId).length !== 0);
+		} while (j$("#" + fieldId).length !== 0);
 		
 		elementId = scope.consts.getValue("CONTAINER_ID") + fieldId;
 
-		$j(input).attr("id", fieldId);
+		j$(input).attr("id", fieldId);
  
 	};
 
@@ -1557,28 +1557,28 @@ var EasyAutocomplete = (function(scope) {
 
 })(EasyAutocomplete || {});
 
-(function($j) {
+(function(j$) {
 
-	$j.fn.easyAutocomplete = function(options) {
+	j$.fn.easyAutocomplete = function(options) {
 
 		return this.each(function() {
-			var $jthis = $j(this),
-				eacHandle = new EasyAutocomplete.main($jthis, options);
+			var j$this = j$(this),
+				eacHandle = new EasyAutocomplete.main(j$this, options);
 
-			if (!EasyAutocomplete.inputHasId($jthis)) {
-				EasyAutocomplete.assignRandomId($jthis);
+			if (!EasyAutocomplete.inputHasId(j$this)) {
+				EasyAutocomplete.assignRandomId(j$this);
 			}
 
 			eacHandle.init();
 
-			EasyAutocomplete.setHandle(eacHandle, $jthis.attr("id"));
+			EasyAutocomplete.setHandle(eacHandle, j$this.attr("id"));
 
 		});
 	};
 
-	$j.fn.getSelectedItemIndex = function() {
+	j$.fn.getSelectedItemIndex = function() {
 
-		var inputId = $j(this).attr("id");
+		var inputId = j$(this).attr("id");
 
 		if (inputId !== undefined) {
 			return EasyAutocomplete.getHandle(inputId).getSelectedItemIndex();
@@ -1587,9 +1587,9 @@ var EasyAutocomplete = (function(scope) {
 		return -1;
 	};
 
-	$j.fn.getItems = function () {
+	j$.fn.getItems = function () {
 
-		var inputId = $j(this).attr("id");
+		var inputId = j$(this).attr("id");
 
 		if (inputId !== undefined) {
 			return EasyAutocomplete.getHandle(inputId).getItems();
@@ -1598,9 +1598,9 @@ var EasyAutocomplete = (function(scope) {
 		return -1;
 	};
 
-	$j.fn.getItemData = function(index) {
+	j$.fn.getItemData = function(index) {
 
-		var inputId = $j(this).attr("id");
+		var inputId = j$(this).attr("id");
 
 		if (inputId !== undefined && index > -1) {
 			return EasyAutocomplete.getHandle(inputId).getItemData(index);
@@ -1609,9 +1609,9 @@ var EasyAutocomplete = (function(scope) {
 		return -1;
 	};
 
-	$j.fn.getSelectedItemData = function() {
+	j$.fn.getSelectedItemData = function() {
 
-		var inputId = $j(this).attr("id");
+		var inputId = j$(this).attr("id");
 
 		if (inputId !== undefined) {
 			return EasyAutocomplete.getHandle(inputId).getSelectedItemData();
