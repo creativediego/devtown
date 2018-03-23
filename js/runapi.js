@@ -13,7 +13,11 @@ var RunApi = Class.create({ //abstract parent class
     initialize: function(searchTerm) {
         this.searchTerm = searchTerm.replace(/\s+/g, '-').toLowerCase();
     },
-
+    
+    makeChart: function() {
+        console.log("makeChart virtual function");
+        //virtual function, implement it in child classes
+    },
     processData: function(data) {
         console.log("ProcessData function");
         //this function will need to be overwritten by child classes
@@ -32,9 +36,6 @@ var RunApi = Class.create({ //abstract parent class
     },
     runFailed : function(){
         console.log("something went wrong");
-    },
-    makeChart: function() {
-        //virtual function, implement it in child classes
     }
 });
 
@@ -42,15 +43,16 @@ var RunApi = Class.create({ //abstract parent class
 var GetCoordinates = Class.create(RunApi, {
     initialize: function($super, searchTerm) {
         $super(searchTerm);
-        this.url = "https://api.teleport.org/api/urban_areas/slug:"+this.searchTerm+"/";
+        this.url = "https://maps.googleapis.com/maps/api/geocode/json?address="+this.searchTerm+"&key=AIzaSyB_nD6SoMGerwmAR7yFzj0csEUO63kxvpk";
     },
     processData: function($super, data) {
         console.log("Running coordinates processData");
+        console.log(data.responseJSON.results[0].geometry.location);
         var obj = {};
-        obj["longitude"] =data.responseJSON.bounding_box.latlon.west;
-        obj["latitude"] = data.responseJSON.bounding_box.latlon.south;
+        obj["longitude"] =data.responseJSON.results[0].geometry.location.lng;
+        obj["latitude"] = data.responseJSON.results[0].geometry.location.lat;
         
-        var events = new EventsAPI(32.312,-117.376);
+        var events = new EventsAPI(obj["latitude"],obj["longitude"]);
         events.run();
 
         console.log(obj);
@@ -70,9 +72,13 @@ var EventsAPI = Class.create(RunApi, {
     processData: function($super, data) {
         var events = data.responseJSON.events;
         console.log("events API processData function");
-        console.log(data);
+        console.log(events);
         var obj = {};
+        console.log("events length");
+        console.log(events.length);
         events.each(function(element) {
+            //create a row for each event. and append it to the parent div to hold this table
+            console.log(element.name);
             obj["name"] = element.name;
             obj["date"] = element.local_date;
             obj["time"] = element.local_time;
@@ -81,7 +87,7 @@ var EventsAPI = Class.create(RunApi, {
                     "group": element.group.name,
                 },
                 obj["description"] = element.description;
-            object["link"] = element.link
+            obj["link"] = element.link
         });
         console.log(obj);
         return obj;
@@ -93,7 +99,9 @@ var EventsAPI = Class.create(RunApi, {
 
 });
 var CityScoresAPI = Class.create(RunApi, {
+    searchTerm : "",
     initialize: function($super, searchTerm) {
+        this.searchTerm = searchTerm;
         $super(searchTerm);
         this.url = "https://api.teleport.org/api/urban_areas/slug:" + this.searchTerm + "/scores/";
     },
@@ -107,15 +115,34 @@ var CityScoresAPI = Class.create(RunApi, {
         scores.each(function(element) {
             obj[element.name] = Math.round(element.score_out_of_10);
             labels.push(element.name);
-            chartData.push(element.score_out_of_10);
+            chartData.push(Math.round(element.score_out_of_10));
 
         });
-        console.log(obj);
-        makeChart(labels, chartData);
-        return obj;
-    },
-    makeChart: function(labels, chartData) {
-        //make chart object and update the chart div on html
+
+        console.log(labels);
+        console.log(chartData);
+
+        var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'horizontalBar',
+
+            // The data for our dataset
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "LifeStyle Scores",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: chartData,
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+
+        this.makeChart();
     },
     runFailed : function(){
         console.log("something went wrong with CityScoresAPI");
