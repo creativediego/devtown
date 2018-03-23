@@ -37,5 +37,4 @@ var searchOptions = {
 };
 
 
-
 j$("#input-city").easyAutocomplete(searchOptions);
