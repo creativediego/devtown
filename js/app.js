@@ -9,3 +9,15 @@ var salariesAPI = new SalariesAPI("San Diego");
 var jobs = new JobsAPI("new york");
 
 var events = new EventsAPI();
+
+var searchOptions = {
+    url: "js/cities.json",
+    getValue: "name",
+    list: {
+        match: {
+            enabled: true
+        }
+    }
+};
+
+$("#city-input").easyAutocomplete(searchOptions);
