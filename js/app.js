@@ -9,16 +9,19 @@ var obj = coordinates.run();*/
 //var jobs = new JobsAPI("new york");).
 
 
-$j("#city-submit").on("click",function(){
+j$("#city-submit").on("click",function(){
     event.preventDefault();
     console.log("city submit");
 
-    var input_city = $j("#input-city").val().trim();
+    var input_city = j$("#input-city").val().trim();
     console.log(input_city);
 
     //validate input_city
     var cityAPI = new CityScoresAPI(input_city);
     cityAPI.run();
+
+    var coordinates = new GetCoordinates(input_city);
+    var obj = coordinates.run();
     
 });
 
@@ -35,4 +38,4 @@ var searchOptions = {
 
 
 
-j$("#city-input").easyAutocomplete(searchOptions);
+j$("#input-city").easyAutocomplete(searchOptions);
