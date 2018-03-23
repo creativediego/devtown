@@ -40,7 +40,7 @@ var RunApi = Class.create({ //abstract parent class
 var GetCoordinates = Class.create(RunApi, {
     initialize: function($super, searchTerm) {
         $super(searchTerm);
-        this.url = `https://api.teleport.org/api/urban_areas/slug:"${this.searchTerm}`
+        this.url = `https://api.teleport.org/api/urban_areas/slug:${this.searchTerm}/`
     },
     processData: function($super, data) {
         console.log("Running coordinates API")
