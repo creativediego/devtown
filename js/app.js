@@ -1,5 +1,3 @@
-
-
 /*var cityAPI = new CityScoresAPI("San Diego");
 cityAPI.run();
 
@@ -35,4 +33,6 @@ var searchOptions = {
     }
 };
 
-//$j("#city-input").easyAutocomplete(searchOptions);
+
+
+j$("#city-input").easyAutocomplete(searchOptions);
