@@ -1,36 +1,45 @@
 /* Search Page Background Image
 */
 
+
 #search-body { 
-    background: url("../images/New-York-City.jpg") no-repeat center center fixed; 
+    background: url("../images/DevTown-Mockup-Blank.jpg") no-repeat center center fixed; 
     background-size: cover;
     z-index: -1;
     height: 100vh;
     width: 100vw;
+    padding-top: 16vh;
   }
 
   #search-bar {
-    position: absolute;
+    /*position: absolute;*/
     left: 0;
     right: 0;
     margin: auto;
     top: 38%;
   }
   #input-city::placeholder {
-    color: white;
+    color: black;
+    font-family: 'Oswald', sans-serif;
   }
 
   #input-city{
-      color: white;
+      color: black;
+      font-family: 'Oswald', sans-serif;
+      background-color: rgba(255, 255, 255, .5);
+      padding-left: 2%;
+      height: 5vw;
   }
 
   #city-help{
-      color: white;
+      color: black;
+      font-family: 'Oswald', sans-serif;
+      font-size: large;
   }
 
   #title{
     text-align: center;
-    position: absolute;
+    /*position: absolute;*/
     left: 0;
     right: 0;
     margin: auto;
@@ -38,16 +47,26 @@
   }
 
   #devtown-title{
-      font-size: 10vw;
-      color: white;
+    font-size: 10vw;
+    color: white;
+    font-family: 'Oswald', sans-serif;
+    font-weight: bold;
+    margin-bottom: 3%;
   }
 
+
   #devtown-sub{
-      color: white;
+      color: #009688;
+      font-family: 'Oswald', sans-serif;
+      margin-bottom: 4%;
+      font-size: x-large;
   }
 
 #city-submit {
     background-color: transparent;
     border-width: 2px;
-    color: #009688;
+    color: black;
+    font-family: 'Oswald', sans-serif;
+    margin-left: 38%;
+    background-color: rgba(0,150,136,.5);
 }
