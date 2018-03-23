@@ -22,4 +22,4 @@ var searchOptions = {
 
 
 
-j$("#city-input").easyAutocomplete(searchOptions);
+j$("#input-city").easyAutocomplete(searchOptions);
