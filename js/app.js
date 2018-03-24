@@ -5,7 +5,7 @@ var coordinates = new GetCoordinates("San Diego");
 var obj = coordinates.run();*/
 
 //var salariesAPI = new SalariesAPI("San Diego");
-
+var input_city;
 //var jobs = new JobsAPI("new york");).
 j$(document).ready(function() {
 
@@ -20,10 +20,10 @@ j$(document).ready(function() {
 
         //Change input city based on which search button was clicked
         if (j$(this).is("#city-submit")) {
-            var input_city = j$("#city-input").val().trim();
+            input_city = j$("#city-input").val().trim();
             console.log(input_city);
         } else if (j$(this).is("#city-submit-nav"))
-            var input_city = j$("#city-input-nav").val().trim();
+            input_city = j$("#city-input-nav").val().trim();
         console.log(input_city); {
 
         }
@@ -34,6 +34,7 @@ j$(document).ready(function() {
 
         var coordinates = new GetCoordinates(input_city);
         var obj = coordinates.run();
+
 
         //Display nav search
         j$("#nav-search").css("display", "flex")
@@ -63,9 +64,15 @@ j$(document).ready(function() {
 
     //Data Buttons
     j$("body").on("click", "#lifestyle-data-button", function() {
-
         j$("#lifestyle-scores").css("display", "flex");
-    })
+        var cityAPI = new CityScoresAPI(input_city);
+        cityAPI.run();
+    });
+
+    j$("body").on("click","#jobs-data-button", function(){
+        var jobs = new JobsAPI(input_city);
+        jobs.run();
+    });
 
 
 });
