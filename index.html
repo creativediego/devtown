@@ -6,81 +6,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/easy-autocomplete.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
-
+    <link rel="stylesheet" type="text/css" href="css/easy-autocomplete.min.css">
+    <link rel="stylesheet" type="text/css" href="css/easy-autocomplete.themes.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
 
     <title>Dev Town</title>
 </head>
 
 <body>
-    <div id="search-body">
-        <div class="row">
-            <div class="col-2">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <a class="navbar-brand" href="#">DevTown</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
 
-            </div>
-            <div class="col-8" id="title">
-                <h1 id="devtown-title">DevTown</h1>
-                <h6 id="devtown-sub">Develop Your Future</h6>
-            </div>
-            <div class="col-2">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about-anchor">About</a>
+                </li>
 
-            </div>
-        </div>
-        <div class="row" id="search-bar">
-            <div class="col-2">
-
-            </div>
-            <form class="col-8">
-                <div class="form-group">
-                    <input type="text" class="form-control" id="input-city" aria-describedby="city-help" placeholder="Enter City">
-                    <small id="city-help" class="form-text">Enter Your Desired City</small>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 row" id="nav-search">
+                <div class="col-8">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search Another City" aria-label="Search" id="city-input-nav">
                 </div>
-                <button type="submit" class="btn-dark w-25 h-50" id="city-submit">Submit</button>
+                <div class="col-3">
+                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit" id="city-submit-nav">Search</button>
+                </div>
             </form>
-            <div class="col-2">
-
-            </div>
         </div>
-    </div>
+    </nav>
+    <section class="jumbotron" id="search-jumbotron">
+        <div class="search-container">
+            <h1 class="title text-white text-center">Find the best cities to be a web developer</h1>
+            <form class="form-inline row ml-sm-4">
 
-    <!--This is the portion that will be populated by lifestyle information-->
-<div class="row m-2" id="lifestyle">
-    <div class="col-1">
+                <div class="input-group col-12">
+                    <div class="col-10">
+                        <input type="text" class="form-control text-left col-12" placeholder="Search City" aria-label="SearchCity" aria-describedby="basic-addon1" id="city-input">
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-info active btn-lg search-button" id="city-submit">Search</button>
+                    </div>
+                    <!--<div class="input-group-append">
+                        <span class="btn btn-info" id="basic-addon1" id="city-submit"><i class="fas fa-search"></i></span>
+                    </div>-->
+                </div>
+            </form>
 
-    </div>
-    <div class="col-10" id="lifestyle-jump">
-        <div class="card">
-            <div class="card-header">
-                Life Style
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <canvas id="myLifeStyleChart"></canvas>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
         </div>
-    </div>
-    <div class="col-1">
-        
-    </div>
-</div>
+    </section>
+    <main class="container pt-20">
+        <section id="about">
+            <a class="anchor" id="about-anchor"></a>
+            <div class=" card-deck text-center">
+                <div class="card ">
+                    <i class="fas fa-home icon"></i>
+
+                    <div class="card-body ">
+                        <h5 class="card-title ">Lifestyle</h5>
+                        <p class="card-text text-left">Get information on weather, cost of living, housing, entertainment, crime, and other must-have's.</p>
+
+                    </div>
+                </div>
+                <div class="card ">
+                    <i class="fas fa-money-bill-alt icon"></i>
+                    <div class="card-body ">
+                        <h5 class="card-title ">Jobs</h5>
+                        <p class="card-text text-left">View current job opening via GitHub jobs, and determine if the job market is right for you.</p>
+
+                    </div>
+                </div>
+                <div class="card ">
+                    <i class="fas fa-calendar-alt icon"></i>
+                    <div class="card-body ">
+                        <h5 class="card-title ">Events</h5>
+                        <p class="card-text text-left">View events related to web development, so you can netowrk and connect with like-minded developers and companies.</p>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--This is the portion that will be populated by lifestyle information-->
+
+        <section id="data">
+            <a class="anchor" id="data-anchor"></a>
+
+
+
+
+            <!--<canvas id="myLifeStyleChart"></canvas>-->
+
+
+        </section>
+
+
+    </main>
 </body>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js "></script>
 <script>
     var j$ = jQuery.noConflict();
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js "></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
-<script src="js/jquery.easy-autocomplete.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js "></script>
+<script src="js/jquery.easy-autocomplete.min.js ">
 </script>
-<script src="js/prototype-cors.js"></script>
-<script src="js/runapi.js"></script>
-<script src="js/app.js"></script>
+<script src="js/prototype-cors.js "></script>
+<script src="js/runapi.js "></script>
+<script src="js/app.js "></script>
+
 
 
 </html>
