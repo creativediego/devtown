@@ -13,7 +13,7 @@ var RunApi = Class.create({ //abstract parent class
     initialize: function(searchTerm) {
         this.searchTerm = searchTerm.replace(/\s+/g, '-').toLowerCase();
     },
-    
+
     makeChart: function() {
         console.log("makeChart virtual function");
         //virtual function, implement it in child classes
@@ -34,7 +34,7 @@ var RunApi = Class.create({ //abstract parent class
         });
         //make an ajax call with this.url and this.searchTerm
     },
-    runFailed : function(){
+    runFailed: function() {
         console.log("something went wrong");
     }
 });
@@ -43,31 +43,31 @@ var RunApi = Class.create({ //abstract parent class
 var GetCoordinates = Class.create(RunApi, {
     initialize: function($super, searchTerm) {
         $super(searchTerm);
-        this.url = "https://maps.googleapis.com/maps/api/geocode/json?address="+this.searchTerm+"&key=AIzaSyB_nD6SoMGerwmAR7yFzj0csEUO63kxvpk";
+        this.url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + this.searchTerm + "&key=AIzaSyB_nD6SoMGerwmAR7yFzj0csEUO63kxvpk";
     },
     processData: function($super, data) {
         console.log("Running coordinates processData");
         console.log(data.responseJSON.results[0].geometry.location);
         var obj = {};
-        obj["longitude"] =data.responseJSON.results[0].geometry.location.lng;
+        obj["longitude"] = data.responseJSON.results[0].geometry.location.lng;
         obj["latitude"] = data.responseJSON.results[0].geometry.location.lat;
-        
-        var events = new EventsAPI(obj["latitude"],obj["longitude"]);
+
+        var events = new EventsAPI(obj["latitude"], obj["longitude"]);
         events.run();
 
         console.log(obj);
         return obj;
     },
-    runFailed : function(){
+    runFailed: function() {
         console.log("something went wrong with GetCoordinates");
     },
 });
 
 var EventsAPI = Class.create(RunApi, {
 
-    initialize: function($super,lat,long) {
+    initialize: function($super, lat, long) {
 
-        this.url = "https://api.meetup.com/find/upcoming_events?photo-host=public&page=20&text=javascript&sig_id=250431359&order=time&lon="+long+"&lat="+lat+"&sig=e5feea709554a29a9ad1908e25d4e43a7c142add";
+        this.url = "https://api.meetup.com/find/upcoming_events?photo-host=public&page=20&text=javascript&sig_id=250431359&order=time&lon=" + long + "&lat=" + lat + "&sig=e5feea709554a29a9ad1908e25d4e43a7c142add";
     },
     processData: function($super, data) {
         var events = data.responseJSON.events;
@@ -92,14 +92,14 @@ var EventsAPI = Class.create(RunApi, {
         console.log(obj);
         return obj;
     },
-    runFailed : function(){
+    runFailed: function() {
         console.log("something went wrong with EventAPI");
     },
 
 
 });
 var CityScoresAPI = Class.create(RunApi, {
-    searchTerm : "",
+    searchTerm: "",
     initialize: function($super, searchTerm) {
         this.searchTerm = searchTerm;
         $super(searchTerm);
@@ -122,29 +122,70 @@ var CityScoresAPI = Class.create(RunApi, {
         console.log(labels);
         console.log(chartData);
 
-        var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            // The type of chart we want to create
-            type: 'horizontalBar',
 
-            // The data for our dataset
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: "LifeStyle Scores",
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: chartData,
-                }]
-            },
 
-            // Configuration options go here
-            options: {}
-        });
 
-        this.makeChart();
+        //Build score divs and append to card 
+        function buildLifeStyle() {
+            //Build data card
+            buildCard("lifestyle-scores");
+
+            //Build lifestyle data for the card
+            let cardDataContainer = j$(`<div class="row">`);
+
+            for (let i = 0; i < labels.length; i++) {
+                let divCol = j$('<div class="col-sm-6">');
+                let label = j$(`<p class="score-label">${labels[i]}</p>`)
+                let progressDiv = j$('<div class="progress">')
+                let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
+                progressDiv.append(progressBarDiv);
+                divCol.append(label).append(progressDiv);
+
+                //Keep storing each score div to this row
+                cardDataContainer.append(divCol);
+
+
+            }
+
+            j$("#lifestyle-scores").html(cardDataContainer);
+
+            //Set page location to anchor
+            let anchor = `<a class="anchor" id="data-anchor"></a>`
+            j$("#data").prepend(anchor);
+            location.href = "#data-anchor"
+        }
+
+        buildLifeStyle();
+
+
+
+
+
+        /*
+                var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'horizontalBar',
+
+                    // The data for our dataset
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "LifeStyle Scores",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: chartData,
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+
+                this.makeChart();
+                */
     },
-    runFailed : function(){
+    runFailed: function() {
         console.log("something went wrong with CityScoresAPI");
     },
 });
@@ -171,7 +212,7 @@ var SalariesAPI = Class.create(RunApi, {
 
         return obj;
     },
-    runFailed : function(){
+    runFailed: function() {
         console.log("something went wrong with SalariesAPI");
     }
 });
@@ -206,7 +247,7 @@ var JobsAPI = Class.create(RunApi, {
 
         //need to discuss with the team on what data to return from JobsAPI's processData function
     },
-    runFailed : function(){
+    runFailed: function() {
         console.log("something went wrong with JobsAPI");
     }
 });
