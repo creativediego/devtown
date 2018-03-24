@@ -158,6 +158,8 @@ var CityScoresAPI = Class.create(RunApi, {
         j$("#data").prepend(anchor);
         location.href = "#data-anchor"
 
+        
+
 
 
         /*
