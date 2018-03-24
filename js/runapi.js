@@ -1,12 +1,3 @@
-/* 
-    To use this class hierarchy properly, please include these scripts in your html file
-
-    <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
-    <script src="js/prototype-cors.js"></script>
-    <script src="js/runapi.js"></script>
-    <script src="js/app.js"></script>
-*/
-
 var RunApi = Class.create({ //abstract parent class
     corsProxy: "https://cors-anywhere.herokuapp.com/",
     url: "",
@@ -102,6 +93,13 @@ var CityScoresAPI = Class.create(RunApi, {
     searchTerm: "",
     initialize: function($super, searchTerm) {
         this.searchTerm = searchTerm;
+        //right now i only see this issue with san francisco. 
+        //We probably should move it to a function/method it handle this on a more general level.
+
+        if(searchTerm.toLowerCase() === "san francisco"){
+            searchTerm = "san francisco bay area";
+        }
+        console.log("search term: " + searchTerm);
         $super(searchTerm);
         this.url = "https://api.teleport.org/api/urban_areas/slug:" + this.searchTerm + "/scores/";
     },
@@ -118,12 +116,6 @@ var CityScoresAPI = Class.create(RunApi, {
             chartData.push(Math.round(element.score_out_of_10));
 
         });
-
-        console.log(labels);
-        console.log(chartData);
-
-
-
 
         //Build score divs and append to card 
         function buildLifeStyle() {
@@ -156,34 +148,6 @@ var CityScoresAPI = Class.create(RunApi, {
         }
 
         buildLifeStyle();
-
-
-
-
-
-        /*
-                var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
-                var chart = new Chart(ctx, {
-                    // The type of chart we want to create
-                    type: 'horizontalBar',
-
-                    // The data for our dataset
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: "LifeStyle Scores",
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            data: chartData,
-                        }]
-                    },
-
-                    // Configuration options go here
-                    options: {}
-                });
-
-                this.makeChart();
-                */
     },
     runFailed: function() {
         console.log("something went wrong with CityScoresAPI");
@@ -230,7 +194,47 @@ var JobsAPI = Class.create(RunApi, {
         var jobs = data.responseJSON;
 
         var results = [];
+
+        //Build data card
+        buildCard("job-listings");
+
+        //Build lifestyle data for the card
+        let cardDataContainer = j$(`<div class="row">`);
+
+        //create table header here;
+        var table = j$(`<table class="table">`);
+        var thead = j$(`<thead>`);
+        var tr = j$(`<tr class="font-weight-bold">`);
+        var title_header = j$(`<th scope="col">`).text("Title");
+        var location_header = j$(`<th scope="col">`).text("Location");
+        var company_header = j$(`<th scope="col">`).text("Company/Employer");
+        var type_header = j$(`<th scope="col">`).text("Job Type");
+        tr.append(title_header).append(location_header).append(company_header).append(type_header);
+        table.append(thead).append(tr);
+        
+        var tbody = j$(`<tbody id="jobs-data">`);
+
         jobs.each(function(job) {
+
+            var row = j$(`<tr>`);
+            var title = j$(`<th>`);
+            var title_link = j$(`<a>`);
+            title_link.text(job.title);
+            title_link.attr("href",job.url);
+            title_link.attr("target","_blank");
+            title.append(title_link);
+            var location = j$(`<th>`).text(job.location);
+            var company = j$(`<th>`);
+            var company_url = j$(`<a>`);
+            company_url.text(job.company);
+            company_url.attr("href",job.company_url);
+            company_url.attr("target","_blank");
+            company.append(company_url);
+            company.attr("href",job.company_url);
+            var type = j$(`<th>`).text(job.type);
+            row.append(title).append(location).append(company).append(type);
+            tbody.append(row);
+
             var j = {};
             j.title = job.title;
             j.location = job.location;
@@ -242,7 +246,24 @@ var JobsAPI = Class.create(RunApi, {
             results.push(j);
 
         });
+
+        table.append(tbody);
+        cardDataContainer.append(table);
+        
+        j$("#job-listings").html(cardDataContainer);
+
         console.log(results);
+
+        //Finish building card with all scores and append it to DOM
+        cardBody.append(cardBodyRow);
+        card.append(cardHeader).append(cardBody);
+        j$("#data").html(card);
+
+        //Anchor
+        let anchor = `<a class="anchor" id="data-anchor"></a>`
+        j$("#data").prepend(anchor);
+        location.href = "#data-anchor"
+
         return results;
 
         //need to discuss with the team on what data to return from JobsAPI's processData function
