@@ -163,6 +163,12 @@ var SalariesAPI = Class.create(RunApi, {
         //$super(data);
         console.log("Running ProcessData in Salaries API");
 
+        //Build data card
+        buildCard("job-listings");
+
+        //Build lifestyle data for the card
+        let cardDataContainer = j$(`<div class="row">`);
+
         var salaries = data.responseJSON.salaries;
         var obj = {};
         //get "web developer" salary
@@ -173,6 +179,16 @@ var SalariesAPI = Class.create(RunApi, {
                 obj["pct_75"] = Math.round(element.salary_percentiles.percentile_75).toLocaleString();
             }
         });
+
+        var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: obj,
+            options: options
+        });
+
+        this.makeChart();
+
+        j$("#job-listings").html(cardDataContainer);
 
         return obj;
     },
