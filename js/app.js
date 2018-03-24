@@ -9,6 +9,7 @@ var obj = coordinates.run();*/
 //var jobs = new JobsAPI("new york");).
 j$(document).ready(function() {
 
+    var inputCity;
 
     //Search Submit
     j$("#city-submit, #city-submit-nav").on("click", function(event) {
@@ -20,25 +21,82 @@ j$(document).ready(function() {
 
         //Change input city based on which search button was clicked
         if (j$(this).is("#city-submit")) {
-            var input_city = j$("#city-input").val().trim();
-            console.log(input_city);
+            inputCity = j$("#city-input").val().trim();
+            console.log(inputCity);
         } else if (j$(this).is("#city-submit-nav"))
-            var input_city = j$("#city-input-nav").val().trim();
-        console.log(input_city); {
+            inputCity = j$("#city-input-nav").val().trim();
+        console.log(inputCity); {
 
         }
 
-        //validate input_city
-        var cityAPI = new CityScoresAPI(input_city);
+        //Build Card
+        buildCard = function(id) {
+            let card = j$('<div class="card" id="data-card">');
+            let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"><h2>${inputCity}</h2></div>`);
+            let cardBody = j$(`<div class="card-body" id="${id}">`);
+
+            lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
+            jobsButton = j$(`<span><button type="button" id="jobs-data-button" class="btn btn-outline-info active">Jobs</button> </span>`);
+            eventsButton = j$(`<span><button type="button" id="events-data-button" class="btn btn-outline-info active">Events</button> </span>`);
+
+            cardHeader.append(lifestyleButton).append(jobsButton).append(eventsButton);
+            //cardBody.append(cardBodyRow)
+            //cardBody.append(cardBodyRow);
+            card.append(cardHeader).append(cardBody);
+            j$("#data").html(card);
+
+        }
+
+
+
+
+        //validate inputCity
+        var cityAPI = new CityScoresAPI(inputCity);
         cityAPI.run();
 
-        var coordinates = new GetCoordinates(input_city);
+        var coordinates = new GetCoordinates(inputCity);
         var obj = coordinates.run();
 
         //Display nav search
         j$("#nav-search").css("display", "flex")
 
     });
+
+    //Take a dynamic data button, and make an API call. This for after the initial search
+    function fetchDataButtons(id) {
+        j$("body").on("click", id, function() {
+            console.log(id);
+
+            let fetchData = {
+                "#lifestyle-data-button": function() {
+                    alert(id)
+                    let cityAPI = new CityScoresAPI(inputCity);
+                    cityAPI.run();
+
+                },
+
+                "#jobs-data-button": function() {
+                    alert(id)
+                    j$("#data-card").html("JOBS DATA HERE");
+
+                },
+
+                "#events-data-button": function() {
+                    alert(id)
+                    j$("#data-card").html("EVENTS DATA HERE");
+
+                }
+            }
+
+            fetchData[id]();
+
+
+        });
+    }
+
+    fetchDataButtons("#lifestyle-data-button");
+    fetchDataButtons("#jobs-data-button");
+    fetchDataButtons("#events-data-button");
 
     //Easy Auto Complete
     var searchOptions = {

@@ -122,43 +122,42 @@ var CityScoresAPI = Class.create(RunApi, {
         console.log(labels);
         console.log(chartData);
 
-        //Build data card
-        let card = j$('<div class="card">');
-        let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"></div>`);
-        let cardBody = j$(`<div class="card-body">`);
-        let cardBodyRow = j$(`<div class="row" id="lifestyle-scores">`);
 
-        lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
-        jobsButton = j$(`<span><button type="button" id="jobs-data-button" class="btn btn-outline-info active">Jobs</button> </span>`);
-        eventsButton = j$(`<span><button type="button" id="events-data-button" class="btn btn-outline-info active">Events</button> </span>`);
 
-        cardHeader.append(lifestyleButton).append(jobsButton).append(eventsButton);
 
-        //Build score divs and append to card row
-        for (let i = 0; i < labels.length; i++) {
-            let divCol = j$('<div class="col-sm-6">');
-            let label = j$(`<p class="score-label">${labels[i]}</p>`)
-            let progressDiv = j$('<div class="progress">')
-            let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
-            progressDiv.append(progressBarDiv);
-            divCol.append(label).append(progressDiv);
+        //Build score divs and append to card 
+        function buildLifeStyle() {
+            //Build data card
+            buildCard("lifestyle-scores");
 
-            //Keep storing each score div to this row
-            cardBodyRow.append(divCol);
+            //Build lifestyle data for the card
+            let cardDataContainer = j$(`<div class="row">`);
 
+            for (let i = 0; i < labels.length; i++) {
+                let divCol = j$('<div class="col-sm-6">');
+                let label = j$(`<p class="score-label">${labels[i]}</p>`)
+                let progressDiv = j$('<div class="progress">')
+                let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
+                progressDiv.append(progressBarDiv);
+                divCol.append(label).append(progressDiv);
+
+                //Keep storing each score div to this row
+                cardDataContainer.append(divCol);
+
+
+            }
+
+            j$("#lifestyle-scores").html(cardDataContainer);
+
+            //Set page location to anchor
+            let anchor = `<a class="anchor" id="data-anchor"></a>`
+            j$("#data").prepend(anchor);
+            location.href = "#data-anchor"
         }
 
-        //Finish building card with all scores and append it to DOM
-        cardBody.append(cardBodyRow);
-        card.append(cardHeader).append(cardBody);
-        j$("#data").html(card);
+        buildLifeStyle();
 
-        //Anchor
-        let anchor = `<a class="anchor" id="data-anchor"></a>`
-        j$("#data").prepend(anchor);
-        location.href = "#data-anchor"
 
-        
 
 
 
