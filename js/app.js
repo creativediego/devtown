@@ -5,7 +5,7 @@ var coordinates = new GetCoordinates("San Diego");
 var obj = coordinates.run();*/
 
 //var salariesAPI = new SalariesAPI("San Diego");
-
+var input_city;
 //var jobs = new JobsAPI("new york");).
 j$(document).ready(function() {
 
@@ -37,9 +37,10 @@ j$(document).ready(function() {
 
             lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
             jobsButton = j$(`<span><button type="button" id="jobs-data-button" class="btn btn-outline-info active">Jobs</button> </span>`);
+            salariesButton = j$(`<span><button type="button" id="salaries-data-button" class="btn btn-outline-info active">Salaries</button> </span>`);
             eventsButton = j$(`<span><button type="button" id="events-data-button" class="btn btn-outline-info active">Events</button> </span>`);
 
-            cardHeader.append(lifestyleButton).append(jobsButton).append(eventsButton);
+            cardHeader.append(lifestyleButton).append(jobsButton).append(salariesButton).append(eventsButton);
             //cardBody.append(cardBodyRow)
             //cardBody.append(cardBodyRow);
             card.append(cardHeader).append(cardBody);
@@ -56,6 +57,7 @@ j$(document).ready(function() {
 
         var coordinates = new GetCoordinates(inputCity);
         var obj = coordinates.run();
+
 
         //Display nav search
         j$("#nav-search").css("display", "flex")
@@ -76,9 +78,16 @@ j$(document).ready(function() {
                 },
 
                 "#jobs-data-button": function() {
-                    alert(id)
-                    j$("#data-card").html("JOBS DATA HERE");
+                    //alert(id);
+                    var jobs = new JobsAPI(inputCity);
+                    jobs.run();
+                    //j$("#data-card").html("JOBS DATA HERE");
 
+                },
+
+                "#salaries-data-button" : function() {
+                    var salaries = new SalariesAPI(inputCity);
+                    salaries.run();
                 },
 
                 "#events-data-button": function() {
@@ -96,6 +105,7 @@ j$(document).ready(function() {
 
     fetchDataButtons("#lifestyle-data-button");
     fetchDataButtons("#jobs-data-button");
+    fetchDataButtons("#salaries-data-button");
     fetchDataButtons("#events-data-button");
 
     //Easy Auto Complete
@@ -117,13 +127,6 @@ j$(document).ready(function() {
     var imageList = ["sandiegoskyline", "boston_1", "boston_2", "central-park-meadow-nyc", "ny-city", "seattle"]
     var image = imageList[Math.floor(Math.random() * imageList.length)];
     j$("#search-jumbotron").css("background-image", "url(images/" + image + ".jpg)");
-
-
-    //Data Buttons
-    j$("body").on("click", "#lifestyle-data-button", function() {
-
-        j$("#lifestyle-scores").css("display", "flex");
-    })
 
 
 });
