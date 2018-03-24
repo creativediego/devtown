@@ -1,12 +1,3 @@
-/* 
-    To use this class hierarchy properly, please include these scripts in your html file
-
-    <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
-    <script src="js/prototype-cors.js"></script>
-    <script src="js/runapi.js"></script>
-    <script src="js/app.js"></script>
-*/
-
 var RunApi = Class.create({ //abstract parent class
     corsProxy: "https://cors-anywhere.herokuapp.com/",
     url: "",
@@ -126,65 +117,37 @@ var CityScoresAPI = Class.create(RunApi, {
 
         });
 
-        //Build data card
-        let card = j$('<div class="card">');
-        let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"></div>`);
-        let cardBody = j$(`<div class="card-body">`);
-        let cardBodyRow = j$(`<div class="row" id="lifestyle-scores">`);
+        //Build score divs and append to card 
+        function buildLifeStyle() {
+            //Build data card
+            buildCard("lifestyle-scores");
 
-        lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
-        jobsButton = j$(`<span><button type="button" id="jobs-data-button" class="btn btn-outline-info active">Jobs</button> </span>`);
-        eventsButton = j$(`<span><button type="button" id="events-data-button" class="btn btn-outline-info active">Events</button> </span>`);
+            //Build lifestyle data for the card
+            let cardDataContainer = j$(`<div class="row">`);
 
-        cardHeader.append(lifestyleButton).append(jobsButton).append(eventsButton);
+            for (let i = 0; i < labels.length; i++) {
+                let divCol = j$('<div class="col-sm-6">');
+                let label = j$(`<p class="score-label">${labels[i]}</p>`)
+                let progressDiv = j$('<div class="progress">')
+                let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
+                progressDiv.append(progressBarDiv);
+                divCol.append(label).append(progressDiv);
 
-        //Build score divs and append to card row
-        for (let i = 0; i < labels.length; i++) {
-            let divCol = j$('<div class="col-sm-6">');
-            let label = j$(`<p class="score-label">${labels[i]}</p>`)
-            let progressDiv = j$('<div class="progress">')
-            let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
-            progressDiv.append(progressBarDiv);
-            divCol.append(label).append(progressDiv);
+                //Keep storing each score div to this row
+                cardDataContainer.append(divCol);
 
-            //Keep storing each score div to this row
-            cardBodyRow.append(divCol);
 
+            }
+
+            j$("#lifestyle-scores").html(cardDataContainer);
+
+            //Set page location to anchor
+            let anchor = `<a class="anchor" id="data-anchor"></a>`
+            j$("#data").prepend(anchor);
+            location.href = "#data-anchor"
         }
 
-        //Finish building card with all scores and append it to DOM
-        cardBody.append(cardBodyRow);
-        card.append(cardHeader).append(cardBody);
-        j$("#data").html(card);
-
-        //Anchor
-        let anchor = `<a class="anchor" id="data-anchor"></a>`
-        j$("#data").prepend(anchor);
-        location.href = "#data-anchor"
-
-        /*
-                var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
-                var chart = new Chart(ctx, {
-                    // The type of chart we want to create
-                    type: 'horizontalBar',
-
-                    // The data for our dataset
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: "LifeStyle Scores",
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            data: chartData,
-                        }]
-                    },
-
-                    // Configuration options go here
-                    options: {}
-                });
-
-                this.makeChart();
-                */
+        buildLifeStyle();
     },
     runFailed: function() {
         console.log("something went wrong with CityScoresAPI");
@@ -233,16 +196,10 @@ var JobsAPI = Class.create(RunApi, {
         var results = [];
 
         //Build data card
-        let card = j$('<div class="card">');
-        let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"></div>`);
-        let cardBody = j$(`<div class="card-body">`);
-        let cardBodyRow = j$(`<div class="row" id="lifestyle-scores">`);
+        buildCard("job-listings");
 
-        lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
-        jobsButton = j$(`<span><button type="button" id="jobs-data-button" class="btn btn-outline-info active">Jobs</button> </span>`);
-        eventsButton = j$(`<span><button type="button" id="events-data-button" class="btn btn-outline-info active">Events</button> </span>`);
-
-        cardHeader.append(lifestyleButton).append(jobsButton).append(eventsButton);
+        //Build lifestyle data for the card
+        let cardDataContainer = j$(`<div class="row">`);
 
         //create table header here;
         var table = j$(`<table class="table">`);
@@ -291,7 +248,9 @@ var JobsAPI = Class.create(RunApi, {
         });
 
         table.append(tbody);
-        cardBodyRow.append(table);
+        cardDataContainer.append(table);
+        
+        j$("#job-listings").html(cardDataContainer);
 
         console.log(results);
 
