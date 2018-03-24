@@ -135,8 +135,6 @@ var CityScoresAPI = Class.create(RunApi, {
 
                 //Keep storing each score div to this row
                 cardDataContainer.append(divCol);
-
-
             }
 
             j$("#lifestyle-scores").html(cardDataContainer);
@@ -164,33 +162,87 @@ var SalariesAPI = Class.create(RunApi, {
         console.log("Running ProcessData in Salaries API");
 
         //Build data card
-        buildCard("job-listings");
+        buildCard("salary-data");
 
         //Build lifestyle data for the card
         let cardDataContainer = j$(`<div class="row">`);
 
         var salaries = data.responseJSON.salaries;
         var obj = {};
+
+        var label = [];
+        var salaryData = [];
         //get "web developer" salary
         salaries.each(function(element) {
             if (element.job.title === "Web Developer") {
+                label.push("25th Percentile");
+                salaryData.push(Math.round(element.salary_percentiles.percentile_25).toLocaleString());
+
+                label.push("50th Percentile");
+                salaryData.push(Math.round(element.salary_percentiles.percentile_50).toLocaleString());
+
+                label.push("75th Percentile");
+                salaryData.push(Math.round(element.salary_percentiles.percentile_75).toLocaleString());
+
                 obj["pct_25"] = Math.round(element.salary_percentiles.percentile_25).toLocaleString();
                 obj["pct_50"] = Math.round(element.salary_percentiles.percentile_50).toLocaleString();
                 obj["pct_75"] = Math.round(element.salary_percentiles.percentile_75).toLocaleString();
             }
         });
+        
 
-        var myLineChart = new Chart(ctx, {
-            type: 'line',
-            data: obj,
-            options: options
+        console.log(label); console.log(salaryData);
+
+        //need help with making the salary data show up in the chart. 
+
+        var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'horizontalBar',
+
+            // The data for our dataset
+            data: {
+                labels: label,
+                datasets: [{
+                    label: "Average Salary Data",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: salaryData,
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
         });
 
         this.makeChart();
+        //buildCard("salary-data");
+        //let cardDataContainer = j$(`<div class="row">`);
+        /*
+        for (let i = 0; i < label.length; i++) {
+            let divCol = j$('<div class="col-sm-6">');
+            let label = j$(`<p class="score-label">${label[i]}</p>`)
+            let progressDiv = j$('<div class="progress">')
+            let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${salaryData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
+            progressDiv.append(progressBarDiv);
+            divCol.append(label).append(progressDiv);
 
-        j$("#job-listings").html(cardDataContainer);
+            //Keep storing each score div to this row
+            cardDataContainer.append(divCol);
+        }
 
-        return obj;
+        j$("#salary-data").html(cardDataContainer);
+
+        //Set page location to anchor
+        let anchor = `<a class="anchor" id="data-anchor"></a>`
+        j$("#data").prepend(anchor);
+        location.href = "#data-anchor";
+
+        //Finish building card with all scores and append it to DOM
+        cardBody.append(cardBodyRow);
+        card.append(cardHeader).append(cardBody);
+        j$("#data").html(card);*/
+
     },
     runFailed: function() {
         console.log("something went wrong with SalariesAPI");
@@ -275,10 +327,6 @@ var JobsAPI = Class.create(RunApi, {
         card.append(cardHeader).append(cardBody);
         j$("#data").html(card);
 
-        //Anchor
-        let anchor = `<a class="anchor" id="data-anchor"></a>`
-        j$("#data").prepend(anchor);
-        location.href = "#data-anchor"
 
         return results;
 
