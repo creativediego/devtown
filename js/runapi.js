@@ -64,24 +64,26 @@ var EventsAPI = Class.create(RunApi, {
         var events = data.responseJSON.events;
         console.log("events API processData function");
         console.log(events);
-        var obj = {};
+        var obj = [];
         console.log("events length");
         console.log(events.length);
-        events.each(function(element) {
-            //create a row for each event. and append it to the parent div to hold this table
-            console.log(element.name);
-            obj["name"] = element.name;
-            obj["date"] = element.local_date;
-            obj["time"] = element.local_time;
-            obj["venue"] = {
-                    "name": element.venue.name,
-                    "group": element.group.name,
-                },
-                obj["description"] = element.description;
-            obj["link"] = element.link
+
+        obj = events.map(function(element) {
+
+
+            return {
+                "name": element.name,
+                "date": element.local_date,
+                "time": element.local_time,
+                "groupName": element.group.name,
+                "description": element.description,
+                "link": element.link
+            }
+
+
         });
-        console.log(obj);
-        return obj;
+
+        console.log("CUSTOM OBJECT: ", obj)
     },
     runFailed: function() {
         console.log("something went wrong with EventAPI");
@@ -96,7 +98,7 @@ var CityScoresAPI = Class.create(RunApi, {
         //right now i only see this issue with san francisco. 
         //We probably should move it to a function/method it handle this on a more general level.
 
-        if(searchTerm.toLowerCase() === "san francisco"){
+        if (searchTerm.toLowerCase() === "san francisco") {
             searchTerm = "san francisco bay area";
         }
         console.log("search term: " + searchTerm);
@@ -211,7 +213,7 @@ var JobsAPI = Class.create(RunApi, {
         var type_header = j$(`<th scope="col">`).text("Job Type");
         tr.append(title_header).append(location_header).append(company_header).append(type_header);
         table.append(thead).append(tr);
-        
+
         var tbody = j$(`<tbody id="jobs-data">`);
 
         jobs.each(function(job) {
@@ -220,17 +222,17 @@ var JobsAPI = Class.create(RunApi, {
             var title = j$(`<th>`);
             var title_link = j$(`<a>`);
             title_link.text(job.title);
-            title_link.attr("href",job.url);
-            title_link.attr("target","_blank");
+            title_link.attr("href", job.url);
+            title_link.attr("target", "_blank");
             title.append(title_link);
             var location = j$(`<th>`).text(job.location);
             var company = j$(`<th>`);
             var company_url = j$(`<a>`);
             company_url.text(job.company);
-            company_url.attr("href",job.company_url);
-            company_url.attr("target","_blank");
+            company_url.attr("href", job.company_url);
+            company_url.attr("target", "_blank");
             company.append(company_url);
-            company.attr("href",job.company_url);
+            company.attr("href", job.company_url);
             var type = j$(`<th>`).text(job.type);
             row.append(title).append(location).append(company).append(type);
             tbody.append(row);
@@ -249,7 +251,7 @@ var JobsAPI = Class.create(RunApi, {
 
         table.append(tbody);
         cardDataContainer.append(table);
-        
+
         j$("#job-listings").html(cardDataContainer);
 
         console.log(results);
