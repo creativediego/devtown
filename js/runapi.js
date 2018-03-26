@@ -91,55 +91,61 @@ var EventsAPI = Class.create(RunApi, {
         //Build data card
         buildCard("event-listings");
 
-        //Build lifestyle data for the card
-        let cardDataContainer = j$(`<div class="row">`);
-
-        //create table header here;
-        var table = j$(`<table class="table">`);
-        var thead = j$(`<thead>`);
-        var tr = j$(`<tr class="font-weight-bold">`);
-        var title_header = j$(`<th scope="col">`).text("Event Name");
-        var location_header = j$(`<th scope="col">`).text("Group Name");
-        var company_header = j$(`<th scope="col">`).text("Date & Time");
-        var type_header = j$(`<th scope="col">`).text("Description");
-        tr.append(title_header).append(location_header).append(company_header);
-        table.append(thead).append(tr);
-
-        var tbody = j$(`<tbody id="events-data">`);
-
-        obj.each(function(e) {
-
-            var row = j$(`<tr>`);
-            var title = j$(`<th>`);
-            var title_link = j$(`<a>`);
-            title_link.text(e.name);
-            title_link.attr("href", e.link);
-            title_link.attr("target", "_blank");
-            title.append(title_link);
-            var group = j$(`<th>`).text(e.groupName);
-            var dateTime = j$(`<th>`).text(moment(e.date).format("ddd, MMM Do YYYY") + " " + e.time);
-
-            var desc = j$(`<th>`).html(e.description);
-            row.append(title).append(group).append(dateTime); //.append(desc);
-            tbody.append(row);
-
-        });
-
-        table.append(tbody);
-        cardDataContainer.append(table);
-
-        j$("#event-listings").html(cardDataContainer);
-
-        //Finish building card with all scores and append it to DOM
-        cardBody.append(cardBodyRow);
-        card.append(cardHeader).append(cardBody);
-        j$("#data").html(card);
-
-        //Set page location to anchor
-        location.href = "#data-anchor"
+        if (data.responseJSON.events.length !== 0) {
 
 
-        console.log("CUSTOM OBJECT: ", obj)
+            //Build lifestyle data for the card
+            let cardDataContainer = j$(`<div class="row">`);
+
+            //create table header here;
+            var table = j$(`<table class="table">`);
+            var thead = j$(`<thead>`);
+            var tr = j$(`<tr class="font-weight-bold">`);
+            var title_header = j$(`<th scope="col">`).text("Event Name");
+            var location_header = j$(`<th scope="col">`).text("Group Name");
+            var company_header = j$(`<th scope="col">`).text("Date & Time");
+            var type_header = j$(`<th scope="col">`).text("Description");
+            tr.append(title_header).append(location_header).append(company_header);
+            table.append(thead).append(tr);
+
+            var tbody = j$(`<tbody id="events-data">`);
+
+            obj.each(function(e) {
+
+                var row = j$(`<tr>`);
+                var title = j$(`<th>`);
+                var title_link = j$(`<a>`);
+                title_link.text(e.name);
+                title_link.attr("href", e.link);
+                title_link.attr("target", "_blank");
+                title.append(title_link);
+                var group = j$(`<th>`).text(e.groupName);
+                var dateTime = j$(`<th>`).text(moment(e.date).format("ddd, MMM Do YYYY") + " " + e.time);
+
+                var desc = j$(`<th>`).html(e.description);
+                row.append(title).append(group).append(dateTime); //.append(desc);
+                tbody.append(row);
+
+            });
+
+            table.append(tbody);
+            cardDataContainer.append(table);
+
+            j$("#event-listings").html(cardDataContainer);
+
+            //Finish building card with all scores and append it to DOM
+            cardBody.append(cardBodyRow);
+            card.append(cardHeader).append(cardBody);
+            j$("#data").html(card);
+
+            //Set page location to anchor
+            location.href = "#data-anchor"
+
+
+        } else {
+
+            j$("#event-listings").append(`<p class="alert alert-warning mt-3 text-center">No events found.</p>`)
+        }
     },
     runFailed: function() {
         console.log("something went wrong with EventAPI");
@@ -332,6 +338,8 @@ var JobsAPI = Class.create(RunApi, {
     },
     processData: function(data) {
         console.log("Running ProcessData in JobsAPI")
+            //alert(data.responseJSON.length)
+
         var jobs = data.responseJSON;
 
         var results = [];
@@ -339,60 +347,71 @@ var JobsAPI = Class.create(RunApi, {
         //Build data card
         buildCard("job-listings");
 
-        //Build lifestyle data for the card
-        let cardDataContainer = j$(`<div class="row">`);
+        if (data.responseJSON.length !== 0) {
 
-        //create table header here;
-        var table = j$(`<table class="table">`);
-        var thead = j$(`<thead>`);
-        var tr = j$(`<tr class="font-weight-bold">`);
-        var title_header = j$(`<th scope="col">`).text("Title");
-        var location_header = j$(`<th scope="col">`).text("Location");
-        var company_header = j$(`<th scope="col">`).text("Company/Employer");
-        var type_header = j$(`<th scope="col">`).text("Job Type");
-        tr.append(title_header).append(location_header).append(company_header).append(type_header);
-        table.append(thead).append(tr);
+            //Build lifestyle data for the card
+            let cardDataContainer = j$(`<div class="row">`);
 
-        var tbody = j$(`<tbody id="jobs-data">`);
+            //create table header here;
+            var table = j$(`<table class="table">`);
+            var thead = j$(`<thead>`);
+            var tr = j$(`<tr class="font-weight-bold">`);
+            var title_header = j$(`<th scope="col">`).text("Title");
+            var location_header = j$(`<th scope="col">`).text("Location");
+            var company_header = j$(`<th scope="col">`).text("Company/Employer");
+            var type_header = j$(`<th scope="col">`).text("Job Type");
+            tr.append(title_header).append(location_header).append(company_header).append(type_header);
+            table.append(thead).append(tr);
 
-        jobs.each(function(job) {
+            var tbody = j$(`<tbody id="jobs-data">`);
 
-            var row = j$(`<tr>`);
-            var title = j$(`<th>`);
-            var title_link = j$(`<a>`);
-            title_link.text(job.title);
-            title_link.attr("href", job.url);
-            title_link.attr("target", "_blank");
-            title.append(title_link);
-            var location = j$(`<th>`).text(job.location);
-            var company = j$(`<th>`);
-            var company_url = j$(`<a>`);
-            company_url.text(job.company);
-            company_url.attr("href", job.company_url);
-            company_url.attr("target", "_blank");
-            company.append(company_url);
-            company.attr("href", job.company_url);
-            var type = j$(`<th>`).text(job.type);
-            row.append(title).append(location).append(company).append(type);
-            tbody.append(row);
+            jobs.each(function(job) {
 
-        });
+                var row = j$(`<tr>`);
+                var title = j$(`<th>`);
+                var title_link = j$(`<a>`);
+                title_link.text(job.title);
+                title_link.attr("href", job.url);
+                title_link.attr("target", "_blank");
+                title.append(title_link);
+                var location = j$(`<th>`).text(job.location);
+                var company = j$(`<th>`);
+                var company_url = j$(`<a>`);
+                company_url.text(job.company);
+                company_url.attr("href", job.company_url);
+                company_url.attr("target", "_blank");
+                company.append(company_url);
+                company.attr("href", job.company_url);
+                var type = j$(`<th>`).text(job.type);
+                row.append(title).append(location).append(company).append(type);
+                tbody.append(row);
 
-        table.append(tbody);
-        cardDataContainer.append(table);
+            });
 
-        j$("#job-listings").html(cardDataContainer);
+            table.append(tbody);
+            cardDataContainer.append(table);
 
-        //Finish building card with all scores and append it to DOM
-        cardBody.append(cardBodyRow);
-        card.append(cardHeader).append(cardBody);
-        j$("#data").html(card);
+            j$("#job-listings").html(cardDataContainer);
 
-        //Set page location to anchor
-        location.href = "#data-anchor"
+            //Finish building card with all scores and append it to DOM
+            cardBody.append(cardBodyRow);
+            card.append(cardHeader).append(cardBody);
+            j$("#data").html(card);
+
+            //Set page location to anchor
+            location.href = "#data-anchor"
+        } else {
+            //alert("no jobs");
+            j$("#job-listings").append(`<p class="alert alert-warning mt-3 text-center">No jobs found.</p>`)
+
+        }
 
     },
     runFailed: function() {
         console.log("something went wrong with JobsAPI");
-    }
+    },
+
+    /* dataNotFound: function() {
+         j$("#job-listings").append(`<p class="alert alert-warning mt-3 text-center">No jobs found for this place.</p>`)
+     }*/
 });
