@@ -11,67 +11,81 @@ j$(document).ready(function() {
 
     var inputCity;
 
-    //Search Submit
-    j$("#city-submit, #city-submit-nav").on("click", function(event) {
-        event.preventDefault();
-        console.log("city submit");
-
-        //Empty current info
-        j$("#lifestyle").empty();
-
-        //Change input city based on which search button was clicked
-        /*if (j$(this).is("#city-submit")) {
-            inputCity = j$("#city-input").val().trim();
-            console.log(inputCity);
-        } else if (j$(this).is("#city-submit-nav"))
-            inputCity = j$("#city-input-nav").val().trim();
-        console.log(inputCity); {
-
-        }*/
-
-        if (j$(this).is("#city-submit")) {
-            inputCity = j$("#city-input").val().trim();
-            j$("#city-input-nav").attr("placeholder", inputCity);
-            j$("#city-input").attr("placeholder", inputCity);
-            j$("#city-input").val('');
-            console.log(inputCity);
-        } else if (j$(this).is("#city-submit-nav"))
-            inputCity = j$("#city-input-nav").val().trim();
-        j$("#city-input").attr("placeholder", inputCity);
-        j$("#city-input-nav").attr("placeholder", inputCity);
-        j$("#city-input-nav").val('');
-        console.log(inputCity); {
-
-        }
-
-        //Build Card
-        buildCard = function(id) {
-            let card = j$('<div class="card" id="data-card">');
-            let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"><h2 style="font-size: 3rem">${inputCity}</h2></div>`);
-            let cardBody = j$(`<div class="card-body" id="${id}">`);
-
-            lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
-            jobsButton = j$(`<span><button type="button" id="jobs-data-button" class="btn btn-outline-info active">Jobs</button> </span>`);
-            salariesButton = j$(`<span><button type="button" id="salaries-data-button" class="btn btn-outline-info active">Salaries</button> </span>`);
-            eventsButton = j$(`<span><button type="button" id="events-data-button" class="btn btn-outline-info active">Events</button> </span>`);
-
-            cardHeader.append(lifestyleButton).append(jobsButton).append(salariesButton).append(eventsButton);
-            //cardBody.append(cardBodyRow)
-            //cardBody.append(cardBodyRow);
-            card.append(cardHeader).append(cardBody);
-            j$("#data").html(card);
-
-        }
-
-
-
-
+    makeAPICall = function() {
         //validate inputCity
         var cityAPI = new CityScoresAPI(inputCity);
         cityAPI.run();
 
         //Display nav search
         j$("#nav-search").css("display", "flex")
+
+    }
+
+    //Build Card
+    buildCard = function(id) {
+        let card = j$('<div class="card" id="data-card">');
+        let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"><h2 style="font-size: 3rem">${inputCity}</h2></div>`);
+        let cardBody = j$(`<div class="card-body" id="${id}">`);
+
+        lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
+        jobsButton = j$(`<span><button type="button" id="jobs-data-button" class="btn btn-outline-info active">Jobs</button> </span>`);
+        salariesButton = j$(`<span><button type="button" id="salaries-data-button" class="btn btn-outline-info active">Salaries</button> </span>`);
+        eventsButton = j$(`<span><button type="button" id="events-data-button" class="btn btn-outline-info active">Events</button> </span>`);
+
+        cardHeader.append(lifestyleButton).append(jobsButton).append(salariesButton).append(eventsButton);
+        //cardBody.append(cardBodyRow)
+        //cardBody.append(cardBodyRow);
+        card.append(cardHeader).append(cardBody);
+        j$("#data").html(card);
+
+    }
+
+    //Search Submit
+    j$("#city-submit, #city-submit-nav").on("click", function(event) {
+        event.preventDefault();
+        console.log("city submit");
+
+        //Empty current info
+        j$("#data, #status, #nav-status").empty();
+
+
+        if (j$(this).is("#city-submit")) {
+            inputCity = j$("#city-input").val().trim();
+
+            if (inputCity === "") {
+
+                j$("#status").append(`<p class="alert alert-warning mt-3 text-center">Enter a city.</p>`);
+
+            } else {
+
+                j$("#city-input-nav").attr("placeholder", inputCity);
+                j$("#city-input").attr("placeholder", inputCity);
+                j$("#city-input").val('');
+                makeAPICall();
+
+            }
+
+
+        } else if (j$(this).is("#city-submit-nav")) {
+            inputCity = j$("#city-input-nav").val().trim();
+
+
+            if (inputCity === "") {
+
+                j$("#nav-status").append(`<p class="alert alert-warning mt-3 text-center">Enter a city.</p>`);
+
+            } else {
+
+                j$("#city-input").attr("placeholder", inputCity);
+                j$("#city-input-nav").attr("placeholder", inputCity);
+                j$("#city-input-nav").val('');
+                makeAPICall();
+
+            }
+
+        }
+
+
 
     });
 
