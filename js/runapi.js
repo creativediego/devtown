@@ -88,6 +88,57 @@ var EventsAPI = Class.create(RunApi, {
 
         });
 
+        //Build data card
+        buildCard("event-listings");
+
+        //Build lifestyle data for the card
+        let cardDataContainer = j$(`<div class="row">`);
+
+        //create table header here;
+        var table = j$(`<table class="table">`);
+        var thead = j$(`<thead>`);
+        var tr = j$(`<tr class="font-weight-bold">`);
+        var title_header = j$(`<th scope="col">`).text("Event Name");
+        var location_header = j$(`<th scope="col">`).text("Group Name");
+        var company_header = j$(`<th scope="col">`).text("Date & Time");
+        var type_header = j$(`<th scope="col">`).text("Description");
+        tr.append(title_header).append(location_header).append(company_header);
+        table.append(thead).append(tr);
+
+        var tbody = j$(`<tbody id="events-data">`);
+
+        obj.each(function(e) {
+
+            var row = j$(`<tr>`);
+            var title = j$(`<th>`);
+            var title_link = j$(`<a>`);
+            title_link.text(e.name);
+            title_link.attr("href", e.link);
+            title_link.attr("target", "_blank");
+            title.append(title_link);
+            var group = j$(`<th>`).text(e.groupName);
+            var dateTime = j$(`<th>`).text(moment(e.date).format("ddd, MMM Do YYYY") + " " + e.time);
+
+            var desc = j$(`<th>`).html(e.description);
+            row.append(title).append(group).append(dateTime); //.append(desc);
+            tbody.append(row);
+
+        });
+
+        table.append(tbody);
+        cardDataContainer.append(table);
+
+        j$("#event-listings").html(cardDataContainer);
+
+        //Finish building card with all scores and append it to DOM
+        cardBody.append(cardBodyRow);
+        card.append(cardHeader).append(cardBody);
+        j$("#data").html(card);
+
+        //Set page location to anchor
+        location.href = "#data-anchor"
+
+
         console.log("CUSTOM OBJECT: ", obj)
     },
     runFailed: function() {
@@ -136,7 +187,7 @@ var CityScoresAPI = Class.create(RunApi, {
                 let divCol = j$('<div class="col-sm-6">');
                 let label = j$(`<p class="score-label">${labels[i]}</p>`)
                 let progressDiv = j$('<div class="progress">')
-                let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
+                let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10"><span class="ml-2">${chartData[i]}</span></div>`)
                 progressDiv.append(progressBarDiv);
                 divCol.append(label).append(progressDiv);
 
@@ -164,6 +215,7 @@ var CityScoresAPI = Class.create(RunApi, {
         j$("#status").append(`<p class="alert alert-warning mt-3 text-center">No data found for the city you entered. Try again.</p>`)
     }
 });
+
 
 var SalariesAPI = Class.create(RunApi, {
     initialize: function($super, searchTerm) {
@@ -324,24 +376,12 @@ var JobsAPI = Class.create(RunApi, {
             row.append(title).append(location).append(company).append(type);
             tbody.append(row);
 
-            var j = {};
-            j.title = job.title;
-            j.location = job.location;
-            j.url = job.url;
-            j.type = job.type;
-            j.company = job.company;
-            j.company_url = job.company_url;
-
-            results.push(j);
-
         });
 
         table.append(tbody);
         cardDataContainer.append(table);
 
         j$("#job-listings").html(cardDataContainer);
-
-        console.log(results);
 
         //Finish building card with all scores and append it to DOM
         cardBody.append(cardBodyRow);
@@ -351,9 +391,6 @@ var JobsAPI = Class.create(RunApi, {
         //Set page location to anchor
         location.href = "#data-anchor"
 
-        return results;
-
-        //need to discuss with the team on what data to return from JobsAPI's processData function
     },
     runFailed: function() {
         console.log("something went wrong with JobsAPI");

@@ -116,8 +116,8 @@ j$(document).ready(function() {
                 },
 
                 "#events-data-button": function() {
-                    alert(id)
-                    j$("#data-card").html("EVENTS DATA HERE");
+                    var MeetUp = new GetCoordinates(inputCity);
+                    MeetUp.run();
 
                 }
             }
