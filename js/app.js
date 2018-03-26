@@ -37,9 +37,9 @@ j$(document).ready(function() {
             console.log(inputCity);
         } else if (j$(this).is("#city-submit-nav"))
             inputCity = j$("#city-input-nav").val().trim();
-            j$("#city-input").attr("placeholder", inputCity);
-            j$("#city-input-nav").attr("placeholder", inputCity);
-            j$("#city-input-nav").val('');
+        j$("#city-input").attr("placeholder", inputCity);
+        j$("#city-input-nav").attr("placeholder", inputCity);
+        j$("#city-input-nav").val('');
         console.log(inputCity); {
 
         }
@@ -47,7 +47,7 @@ j$(document).ready(function() {
         //Build Card
         buildCard = function(id) {
             let card = j$('<div class="card" id="data-card">');
-            let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"><h2>${inputCity}</h2></div>`);
+            let cardHeader = j$(`<div class="card-header lead text-center" id="data-header"><h2 style="font-size: 3rem">${inputCity}</h2></div>`);
             let cardBody = j$(`<div class="card-body" id="${id}">`);
 
             lifestyleButton = j$(`<span><button type="button" id="lifestyle-data-button" class="btn btn-outline-info active">LifeStyle</button> </span>`);
@@ -86,21 +86,21 @@ j$(document).ready(function() {
 
             let fetchData = {
                 "#lifestyle-data-button": function() {
-                    alert(id)
+
                     let cityAPI = new CityScoresAPI(inputCity);
                     cityAPI.run();
 
                 },
 
                 "#jobs-data-button": function() {
-                    //alert(id);
+
                     var jobs = new JobsAPI(inputCity);
                     jobs.run();
                     //j$("#data-card").html("JOBS DATA HERE");
 
                 },
 
-                "#salaries-data-button" : function() {
+                "#salaries-data-button": function() {
                     var salaries = new SalariesAPI(inputCity);
                     salaries.run();
                 },
