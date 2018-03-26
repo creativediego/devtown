@@ -167,83 +167,91 @@ var SalariesAPI = Class.create(RunApi, {
         buildCard("salary-data");
 
         //Build lifestyle data for the card
-        let cardDataContainer = j$(`<div class="row">`);
+        //let cardDataContainer = j$(`<div class="row">`);
 
         var salaries = data.responseJSON.salaries;
         var obj = {};
 
-        var label = [];
+        var labels = [];
         var salaryData = [];
+        var salaryDataRaw = [];
         //get "web developer" salary
         salaries.each(function(element) {
             if (element.job.title === "Web Developer") {
-                label.push("25th Percentile");
+                labels.push("25th Percentile");
                 salaryData.push(Math.round(element.salary_percentiles.percentile_25).toLocaleString());
+                salaryDataRaw.push(Math.round(element.salary_percentiles.percentile_25));
 
-                label.push("50th Percentile");
+                labels.push("50th Percentile");
                 salaryData.push(Math.round(element.salary_percentiles.percentile_50).toLocaleString());
+                salaryDataRaw.push(Math.round(element.salary_percentiles.percentile_50));
 
-                label.push("75th Percentile");
+                labels.push("75th Percentile");
                 salaryData.push(Math.round(element.salary_percentiles.percentile_75).toLocaleString());
+                salaryDataRaw.push(Math.round(element.salary_percentiles.percentile_75));
 
                 obj["pct_25"] = Math.round(element.salary_percentiles.percentile_25).toLocaleString();
                 obj["pct_50"] = Math.round(element.salary_percentiles.percentile_50).toLocaleString();
                 obj["pct_75"] = Math.round(element.salary_percentiles.percentile_75).toLocaleString();
             }
         });
-        
 
-        console.log(label); console.log(salaryData);
+        salaryAverage = Math.round(salaryDataRaw.reduce((acc, val) => acc + val) / salaryDataRaw.length);
+        salaryAverage = salaryAverage.toLocaleString();
 
-        //need help with making the salary data show up in the chart. 
 
-        var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            // The type of chart we want to create
+        let chartCanvas = j$(`<canvas id="salaryChart" class="col-md-10" style="margin: auto"></canvas>`)
+        let averageLabel = j$(`<h2 class="text-center" style="font-size: 4rem">$${salaryAverage}</h2>`);
+        let averageSubtitle = j$(`<p class="text-center">Salary Average of 25th, 50th, and 75th Percentiles</p>`);
+        j$("#salary-data").append(averageLabel).append(averageSubtitle);
+        j$("#salary-data").append(chartCanvas);
+
+
+
+        var ctx = document.getElementById("salaryChart").getContext('2d');
+        var myChart = new Chart(ctx, {
             type: 'horizontalBar',
-
-            // The data for our dataset
             data: {
-                labels: label,
+                labels: ["25th Percentile", "50th Percentile", "75th Percentile"],
                 datasets: [{
-                    label: "Average Salary Data",
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: salaryData,
+                    label: `Web Developer Salary`,
+                    data: salaryDataRaw,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(54, 162, 235, 1)'
+
+                    ],
+                    borderWidth: 1
                 }]
             },
+            options: {
 
-            // Configuration options go here
-            options: {}
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
         });
 
-        this.makeChart();
-        //buildCard("salary-data");
-        //let cardDataContainer = j$(`<div class="row">`);
-        /*
-        for (let i = 0; i < label.length; i++) {
-            let divCol = j$('<div class="col-sm-6">');
-            let label = j$(`<p class="score-label">${label[i]}</p>`)
-            let progressDiv = j$('<div class="progress">')
-            let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${salaryData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
-            progressDiv.append(progressBarDiv);
-            divCol.append(label).append(progressDiv);
 
-            //Keep storing each score div to this row
-            cardDataContainer.append(divCol);
-        }
-
-        j$("#salary-data").html(cardDataContainer);
 
         //Set page location to anchor
-        let anchor = `<a class="anchor" id="data-anchor"></a>`
-        j$("#data").prepend(anchor);
-        location.href = "#data-anchor";
+        location.href = "#data-anchor"
 
-        //Finish building card with all scores and append it to DOM
-        cardBody.append(cardBodyRow);
-        card.append(cardHeader).append(cardBody);
-        j$("#data").html(card);*/
+        //console.log(salaries);
+        console.log(labels);
+        console.log(salaryData);
+
 
     },
     runFailed: function() {
@@ -329,6 +337,8 @@ var JobsAPI = Class.create(RunApi, {
         card.append(cardHeader).append(cardBody);
         j$("#data").html(card);
 
+        //Set page location to anchor
+        location.href = "#data-anchor"
 
         return results;
 
