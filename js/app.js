@@ -70,10 +70,6 @@ j$(document).ready(function() {
         var cityAPI = new CityScoresAPI(inputCity);
         cityAPI.run();
 
-        var coordinates = new GetCoordinates(inputCity);
-        var obj = coordinates.run();
-
-
         //Display nav search
         j$("#nav-search").css("display", "flex")
 
@@ -106,8 +102,8 @@ j$(document).ready(function() {
                 },
 
                 "#events-data-button": function() {
-                    alert(id)
-                    j$("#data-card").html("EVENTS DATA HERE");
+                    var MeetUp = new GetCoordinates(inputCity);
+                    MeetUp.run();
 
                 }
             }
