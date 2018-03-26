@@ -21,12 +21,17 @@ var RunApi = Class.create({ //abstract parent class
         new Ajax.Request(this.url, {
             method: 'get',
             onSuccess: this.processData,
-            onFailure: this.runFailed
+            onFailure: this.runFailed,
+            on404: this.dataNotFound
         });
         //make an ajax call with this.url and this.searchTerm
     },
     runFailed: function() {
         console.log("something went wrong");
+    },
+
+    dataNotFound: function() {
+        console.log("Data not found")
     }
 });
 
@@ -148,10 +153,16 @@ var CityScoresAPI = Class.create(RunApi, {
         }
 
         buildLifeStyle();
+
     },
     runFailed: function() {
-        console.log("something went wrong with CityScoresAPI");
+        j$("#status").text(`<p class="alert alert-warning mt-3 text-center">Error requesting data. Try again.</p>`)
+
     },
+
+    dataNotFound: function() {
+        j$("#status").append(`<p class="alert alert-warning mt-3 text-center">No data found for the city you entered. Try again.</p>`)
+    }
 });
 
 var SalariesAPI = Class.create(RunApi, {
