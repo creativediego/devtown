@@ -218,13 +218,20 @@ var CityScoresAPI = Class.create(RunApi, {
     },
 
     dataNotFound: function() {
-        j$("#status").append(`<p class="alert alert-warning mt-3 text-center">No data found for the city you entered. Try again.</p>`)
+        j$("#status").append(`<p class="alert alert-warning mt-3 text-center">No data found for the city you entered. Please try again at a later time as we will continue to update and expand this site, thank you.</p>`)
     }
 });
 
 
 var SalariesAPI = Class.create(RunApi, {
     initialize: function($super, searchTerm) {
+        this.searchTerm = searchTerm;
+        //right now i only see this issue with san francisco. 
+        //We probably should move it to a function/method it handle this on a more general level.
+
+        if (searchTerm.toLowerCase() === "san francisco") {
+            searchTerm = "san francisco bay area";
+        }
         $super(searchTerm);
         this.url = "https://api.teleport.org/api/urban_areas/slug:" + this.searchTerm + "/salaries/";
     },
@@ -402,7 +409,7 @@ var JobsAPI = Class.create(RunApi, {
             location.href = "#data-anchor"
         } else {
             //alert("no jobs");
-            j$("#job-listings").append(`<p class="alert alert-warning mt-3 text-center">No jobs found.</p>`)
+            j$("#job-listings").append(`<p class="alert alert-warning mt-3 text-center">There are currently no jobs listed for this city. Please try again at a later time as we will continue to update and expand this site, thank you.</p>`)
 
         }
 
