@@ -120,8 +120,10 @@ var EventsAPI = Class.create(RunApi, {
                 title_link.attr("target", "_blank");
                 title.append(title_link);
                 var group = j$(`<th>`).text(e.groupName);
-                var dateTime = j$(`<th>`).text(moment(e.date).format("ddd, MMM Do YYYY") + " " + e.time);
-
+                var momentTime = moment(e.time, "HH:mm").format("h:mm a");
+                var dateTime = j$(`<th>`).text(moment(e.date).format("ddd, MMM Do YYYY") + " " + momentTime);
+                console.log(momentTime);
+                
                 var desc = j$(`<th>`).html(e.description);
                 row.append(title).append(group).append(dateTime); //.append(desc);
                 tbody.append(row);
