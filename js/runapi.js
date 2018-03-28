@@ -21,12 +21,17 @@ var RunApi = Class.create({ //abstract parent class
         new Ajax.Request(this.url, {
             method: 'get',
             onSuccess: this.processData,
-            onFailure: this.runFailed
+            onFailure: this.runFailed,
+            on404: this.dataNotFound
         });
         //make an ajax call with this.url and this.searchTerm
     },
     runFailed: function() {
         console.log("something went wrong");
+    },
+
+    dataNotFound: function() {
+        console.log("Data not found")
     }
 });
 
@@ -64,24 +69,85 @@ var EventsAPI = Class.create(RunApi, {
         var events = data.responseJSON.events;
         console.log("events API processData function");
         console.log(events);
-        var obj = {};
+        var obj = [];
         console.log("events length");
         console.log(events.length);
-        events.each(function(element) {
-            //create a row for each event. and append it to the parent div to hold this table
-            console.log(element.name);
-            obj["name"] = element.name;
-            obj["date"] = element.local_date;
-            obj["time"] = element.local_time;
-            obj["venue"] = {
-                    "name": element.venue.name,
-                    "group": element.group.name,
-                },
-                obj["description"] = element.description;
-            obj["link"] = element.link
+
+        obj = events.map(function(element) {
+
+
+            return {
+                "name": element.name,
+                "date": element.local_date,
+                "time": element.local_time,
+                "groupName": element.group.name,
+                "description": element.description,
+                "link": element.link
+            }
+
+
         });
-        console.log(obj);
-        return obj;
+
+        //Build data card
+        buildCard("event-listings");
+
+        if (data.responseJSON.events.length !== 0) {
+
+
+            //Build lifestyle data for the card
+            let cardDataContainer = j$(`<div class="row">`);
+
+            //create table header here;
+            var table = j$(`<table class="table">`);
+            var thead = j$(`<thead>`);
+            var tr = j$(`<tr class="font-weight-bold">`);
+            var title_header = j$(`<th scope="col">`).text("Event Name");
+            var location_header = j$(`<th scope="col">`).text("Group Name");
+            var company_header = j$(`<th scope="col">`).text("Date & Time");
+            var type_header = j$(`<th scope="col">`).text("Description");
+            tr.append(title_header).append(location_header).append(company_header);
+            table.append(thead).append(tr);
+
+            var tbody = j$(`<tbody id="events-data">`);
+
+            obj.each(function(e) {
+
+                var row = j$(`<tr>`);
+                var title = j$(`<th>`);
+                var title_link = j$(`<a>`);
+                title_link.text(e.name);
+                title_link.attr("href", e.link);
+                title_link.attr("target", "_blank");
+                title.append(title_link);
+                var group = j$(`<th>`).text(e.groupName);
+                var momentTime = moment(e.time, "HH:mm").format("h:mm a");
+                var dateTime = j$(`<th>`).text(moment(e.date).format("ddd, MMM Do YYYY") + " " + momentTime);
+                console.log(momentTime);
+                
+                var desc = j$(`<th>`).html(e.description);
+                row.append(title).append(group).append(dateTime); //.append(desc);
+                tbody.append(row);
+
+            });
+
+            table.append(tbody);
+            cardDataContainer.append(table);
+
+            j$("#event-listings").html(cardDataContainer);
+
+            //Finish building card with all scores and append it to DOM
+            cardBody.append(cardBodyRow);
+            card.append(cardHeader).append(cardBody);
+            j$("#data").html(card);
+
+            //Set page location to anchor
+            location.href = "#data-anchor"
+
+
+        } else {
+
+            j$("#event-listings").append(`<p class="alert alert-warning mt-3 text-center">No events found.</p>`)
+        }
     },
     runFailed: function() {
         console.log("something went wrong with EventAPI");
@@ -96,7 +162,7 @@ var CityScoresAPI = Class.create(RunApi, {
         //right now i only see this issue with san francisco. 
         //We probably should move it to a function/method it handle this on a more general level.
 
-        if(searchTerm.toLowerCase() === "san francisco"){
+        if (searchTerm.toLowerCase() === "san francisco") {
             searchTerm = "san francisco bay area";
         }
         console.log("search term: " + searchTerm);
@@ -129,7 +195,7 @@ var CityScoresAPI = Class.create(RunApi, {
                 let divCol = j$('<div class="col-sm-6">');
                 let label = j$(`<p class="score-label">${labels[i]}</p>`)
                 let progressDiv = j$('<div class="progress">')
-                let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
+                let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${chartData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10"><span class="ml-2">${chartData[i]}</span></div>`)
                 progressDiv.append(progressBarDiv);
                 divCol.append(label).append(progressDiv);
 
@@ -146,14 +212,28 @@ var CityScoresAPI = Class.create(RunApi, {
         }
 
         buildLifeStyle();
+
     },
     runFailed: function() {
-        console.log("something went wrong with CityScoresAPI");
+        j$("#status").text(`<p class="alert alert-warning mt-3 text-center">Error requesting data. Try again.</p>`)
+
     },
+
+    dataNotFound: function() {
+        j$("#status").append(`<p class="alert alert-warning mt-3 text-center">No data found for the city you entered. Please try again at a later time as we will continue to update and expand this site, thank you.</p>`)
+    }
 });
+
 
 var SalariesAPI = Class.create(RunApi, {
     initialize: function($super, searchTerm) {
+        this.searchTerm = searchTerm;
+        //right now i only see this issue with san francisco. 
+        //We probably should move it to a function/method it handle this on a more general level.
+
+        if (searchTerm.toLowerCase() === "san francisco") {
+            searchTerm = "san francisco bay area";
+        }
         $super(searchTerm);
         this.url = "https://api.teleport.org/api/urban_areas/slug:" + this.searchTerm + "/salaries/";
     },
@@ -165,83 +245,91 @@ var SalariesAPI = Class.create(RunApi, {
         buildCard("salary-data");
 
         //Build lifestyle data for the card
-        let cardDataContainer = j$(`<div class="row">`);
+        //let cardDataContainer = j$(`<div class="row">`);
 
         var salaries = data.responseJSON.salaries;
         var obj = {};
 
-        var label = [];
+        var labels = [];
         var salaryData = [];
+        var salaryDataRaw = [];
         //get "web developer" salary
         salaries.each(function(element) {
             if (element.job.title === "Web Developer") {
-                label.push("25th Percentile");
+                labels.push("25th Percentile");
                 salaryData.push(Math.round(element.salary_percentiles.percentile_25).toLocaleString());
+                salaryDataRaw.push(Math.round(element.salary_percentiles.percentile_25));
 
-                label.push("50th Percentile");
+                labels.push("50th Percentile");
                 salaryData.push(Math.round(element.salary_percentiles.percentile_50).toLocaleString());
+                salaryDataRaw.push(Math.round(element.salary_percentiles.percentile_50));
 
-                label.push("75th Percentile");
+                labels.push("75th Percentile");
                 salaryData.push(Math.round(element.salary_percentiles.percentile_75).toLocaleString());
+                salaryDataRaw.push(Math.round(element.salary_percentiles.percentile_75));
 
                 obj["pct_25"] = Math.round(element.salary_percentiles.percentile_25).toLocaleString();
                 obj["pct_50"] = Math.round(element.salary_percentiles.percentile_50).toLocaleString();
                 obj["pct_75"] = Math.round(element.salary_percentiles.percentile_75).toLocaleString();
             }
         });
-        
 
-        console.log(label); console.log(salaryData);
+        salaryAverage = Math.round(salaryDataRaw.reduce((acc, val) => acc + val) / salaryDataRaw.length);
+        salaryAverage = salaryAverage.toLocaleString();
 
-        //need help with making the salary data show up in the chart. 
 
-        var ctx = document.getElementById('myLifeStyleChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            // The type of chart we want to create
+        let chartCanvas = j$(`<canvas id="salaryChart" class="col-md-10" style="margin: auto"></canvas>`)
+        let averageLabel = j$(`<h2 class="text-center" style="font-size: 4rem">$${salaryAverage}</h2>`);
+        let averageSubtitle = j$(`<p class="text-center">Salary Average of 25th, 50th, and 75th Percentiles</p>`);
+        j$("#salary-data").append(averageLabel).append(averageSubtitle);
+        j$("#salary-data").append(chartCanvas);
+
+
+
+        var ctx = document.getElementById("salaryChart").getContext('2d');
+        var myChart = new Chart(ctx, {
             type: 'horizontalBar',
-
-            // The data for our dataset
             data: {
-                labels: label,
+                labels: ["25th Percentile", "50th Percentile", "75th Percentile"],
                 datasets: [{
-                    label: "Average Salary Data",
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: salaryData,
+                    label: `Web Developer Salary`,
+                    data: salaryDataRaw,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(54, 162, 235, 1)'
+
+                    ],
+                    borderWidth: 1
                 }]
             },
+            options: {
 
-            // Configuration options go here
-            options: {}
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
         });
 
-        this.makeChart();
-        //buildCard("salary-data");
-        //let cardDataContainer = j$(`<div class="row">`);
-        /*
-        for (let i = 0; i < label.length; i++) {
-            let divCol = j$('<div class="col-sm-6">');
-            let label = j$(`<p class="score-label">${label[i]}</p>`)
-            let progressDiv = j$('<div class="progress">')
-            let progressBarDiv = j$(`<div class="progress-bar bg-info" role="progressbar" style="width: ${salaryData[i]}0%" aria-valuenow="${chartData[i]}" aria-valuemin="0" aria-valuemax="10">${chartData[i]}/10</div>`)
-            progressDiv.append(progressBarDiv);
-            divCol.append(label).append(progressDiv);
 
-            //Keep storing each score div to this row
-            cardDataContainer.append(divCol);
-        }
-
-        j$("#salary-data").html(cardDataContainer);
 
         //Set page location to anchor
-        let anchor = `<a class="anchor" id="data-anchor"></a>`
-        j$("#data").prepend(anchor);
-        location.href = "#data-anchor";
+        location.href = "#data-anchor"
 
-        //Finish building card with all scores and append it to DOM
-        cardBody.append(cardBodyRow);
-        card.append(cardHeader).append(cardBody);
-        j$("#data").html(card);*/
+        //console.log(salaries);
+        console.log(labels);
+        console.log(salaryData);
+
 
     },
     runFailed: function() {
@@ -259,6 +347,8 @@ var JobsAPI = Class.create(RunApi, {
     },
     processData: function(data) {
         console.log("Running ProcessData in JobsAPI")
+            //alert(data.responseJSON.length)
+
         var jobs = data.responseJSON;
 
         var results = [];
@@ -266,73 +356,71 @@ var JobsAPI = Class.create(RunApi, {
         //Build data card
         buildCard("job-listings");
 
-        //Build lifestyle data for the card
-        let cardDataContainer = j$(`<div class="row">`);
+        if (data.responseJSON.length !== 0) {
 
-        //create table header here;
-        var table = j$(`<table class="table">`);
-        var thead = j$(`<thead>`);
-        var tr = j$(`<tr class="font-weight-bold">`);
-        var title_header = j$(`<th scope="col">`).text("Title");
-        var location_header = j$(`<th scope="col">`).text("Location");
-        var company_header = j$(`<th scope="col">`).text("Company/Employer");
-        var type_header = j$(`<th scope="col">`).text("Job Type");
-        tr.append(title_header).append(location_header).append(company_header).append(type_header);
-        table.append(thead).append(tr);
-        
-        var tbody = j$(`<tbody id="jobs-data">`);
+            //Build lifestyle data for the card
+            let cardDataContainer = j$(`<div class="row">`);
 
-        jobs.each(function(job) {
+            //create table header here;
+            var table = j$(`<table class="table">`);
+            var thead = j$(`<thead>`);
+            var tr = j$(`<tr class="font-weight-bold">`);
+            var title_header = j$(`<th scope="col">`).text("Title");
+            var location_header = j$(`<th scope="col">`).text("Location");
+            var company_header = j$(`<th scope="col">`).text("Company/Employer");
+            var type_header = j$(`<th scope="col">`).text("Job Type");
+            tr.append(title_header).append(location_header).append(company_header).append(type_header);
+            table.append(thead).append(tr);
 
-            var row = j$(`<tr>`);
-            var title = j$(`<th>`);
-            var title_link = j$(`<a>`);
-            title_link.text(job.title);
-            title_link.attr("href",job.url);
-            title_link.attr("target","_blank");
-            title.append(title_link);
-            var location = j$(`<th>`).text(job.location);
-            var company = j$(`<th>`);
-            var company_url = j$(`<a>`);
-            company_url.text(job.company);
-            company_url.attr("href",job.company_url);
-            company_url.attr("target","_blank");
-            company.append(company_url);
-            company.attr("href",job.company_url);
-            var type = j$(`<th>`).text(job.type);
-            row.append(title).append(location).append(company).append(type);
-            tbody.append(row);
+            var tbody = j$(`<tbody id="jobs-data">`);
 
-            var j = {};
-            j.title = job.title;
-            j.location = job.location;
-            j.url = job.url;
-            j.type = job.type;
-            j.company = job.company;
-            j.company_url = job.company_url;
+            jobs.each(function(job) {
 
-            results.push(j);
+                var row = j$(`<tr>`);
+                var title = j$(`<th>`);
+                var title_link = j$(`<a>`);
+                title_link.text(job.title);
+                title_link.attr("href", job.url);
+                title_link.attr("target", "_blank");
+                title.append(title_link);
+                var location = j$(`<th>`).text(job.location);
+                var company = j$(`<th>`);
+                var company_url = j$(`<a>`);
+                company_url.text(job.company);
+                company_url.attr("href", job.company_url);
+                company_url.attr("target", "_blank");
+                company.append(company_url);
+                company.attr("href", job.company_url);
+                var type = j$(`<th>`).text(job.type);
+                row.append(title).append(location).append(company).append(type);
+                tbody.append(row);
 
-        });
+            });
 
-        table.append(tbody);
-        cardDataContainer.append(table);
-        
-        j$("#job-listings").html(cardDataContainer);
+            table.append(tbody);
+            cardDataContainer.append(table);
 
-        console.log(results);
+            j$("#job-listings").html(cardDataContainer);
 
-        //Finish building card with all scores and append it to DOM
-        cardBody.append(cardBodyRow);
-        card.append(cardHeader).append(cardBody);
-        j$("#data").html(card);
+            //Finish building card with all scores and append it to DOM
+            cardBody.append(cardBodyRow);
+            card.append(cardHeader).append(cardBody);
+            j$("#data").html(card);
 
+            //Set page location to anchor
+            location.href = "#data-anchor"
+        } else {
+            //alert("no jobs");
+            j$("#job-listings").append(`<p class="alert alert-warning mt-3 text-center">There are currently no jobs listed for this city. Please try again at a later time as we will continue to update and expand this site, thank you.</p>`)
 
-        return results;
+        }
 
-        //need to discuss with the team on what data to return from JobsAPI's processData function
     },
     runFailed: function() {
         console.log("something went wrong with JobsAPI");
-    }
+    },
+
+    /* dataNotFound: function() {
+         j$("#job-listings").append(`<p class="alert alert-warning mt-3 text-center">No jobs found for this place.</p>`)
+     }*/
 });

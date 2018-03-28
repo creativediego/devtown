@@ -41,19 +41,23 @@
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit" id="city-submit-nav">Search</button>
                 </div>
             </form>
+            <div id="nav-status"></div>
         </div>
     </nav>
     <section class="jumbotron" id="search-jumbotron">
         <div class="search-container">
             <h1 class="title text-white text-center">Find the best cities to be a web developer</h1>
-            <form class="form-inline row ml-sm-4">
+            <form class="form-inline row ml-sm-4 ">
 
                 <div class="input-group col-12">
                     <div class="col-10">
                         <input type="text" class="form-control text-left col-12" placeholder="Search City" aria-label="SearchCity" aria-describedby="basic-addon1" id="city-input">
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-info active btn-lg search-button" id="city-submit">Search</button>
+                        <button class="btn btn-info active btn-lg search-button" id="city-submit" type="submit">Search</button>
+                    </div>
+                    <div class="col-10" id="status">
+
                     </div>
                     <!--<div class="input-group-append">
                         <span class="btn btn-info" id="basic-addon1" id="city-submit"><i class="fas fa-search"></i></span>
@@ -72,7 +76,7 @@
 
                     <div class="card-body ">
                         <h5 class="card-title ">Lifestyle</h5>
-                        <p class="card-text text-left">Get information on weather, cost of living, housing, entertainment, crime, and other must-have's.</p>
+                        <p class="card-text text-left">Easy to read information on Cost of living, Housing, Education, Heatlhcare, and other must-have's.</p>
 
                     </div>
                 </div>
@@ -80,7 +84,7 @@
                     <i class="fas fa-money-bill-alt icon"></i>
                     <div class="card-body ">
                         <h5 class="card-title ">Jobs</h5>
-                        <p class="card-text text-left">View current job opening via GitHub jobs, and determine if the job market is right for you.</p>
+                        <p class="card-text text-left">Current job openings via GitHub jobs, and determine if the job market is right for you.</p>
 
                     </div>
                 </div>
@@ -88,7 +92,7 @@
                     <i class="fas fa-calendar-alt icon"></i>
                     <div class="card-body ">
                         <h5 class="card-title ">Events</h5>
-                        <p class="card-text text-left">View events related to web development, so you can netowrk and connect with like-minded developers and companies.</p>
+                        <p class="card-text text-left"> Find events related to web development, so you can network and connect with like-minded developers and companies.</p>
 
                     </div>
                 </div>
@@ -120,6 +124,7 @@
 <script src="js/jquery.easy-autocomplete.min.js ">
 </script>
 <script src="js/prototype-cors.js "></script>
+<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 <script src="js/runapi.js "></script>
 <script src="js/app.js "></script>
 
